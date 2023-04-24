@@ -1,6 +1,21 @@
 <template>
-  <h1>App</h1>
+  <nav>
+    <the-header></the-header>
+  </nav>
+  <router-view></router-view>
 </template>
+
+<script lang="ts">
+import TheHeader from "./components/core/TheHeader.vue";
+export default {
+  components: {
+    TheHeader,
+  },
+  setup() {
+    return {};
+  },
+};
+</script>
 
 <style lang="scss">
 #app {
