@@ -1,8 +1,12 @@
 <template>
-  <nav>
-    <the-header></the-header>
-  </nav>
-  <router-view></router-view>
+  <section class="h-100 w-100 d-flex flex-column">
+    <header class="container-xl">
+      <the-header></the-header>
+    </header>
+    <main class="container-xl flex-grow-1">
+      <router-view></router-view>
+    </main>
+  </section>
 </template>
 
 <script lang="ts">
@@ -18,24 +22,14 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+body,
+html {
+  height: 100%;
+  width: 100%;
 }
 </style>
