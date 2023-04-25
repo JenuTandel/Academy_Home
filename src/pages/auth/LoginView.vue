@@ -14,27 +14,40 @@
       <!-- logo -->
       <img class="logo" src="./../../assets/images/logo.png" />
       <!-- start: form -->
-      <form class="rounded border p-3">
+      <Form
+        class="rounded border p-3"
+        @submit.prevent="onLogin"
+        :validation-schema="schema"
+        v-slot="{ errors }"
+      >
         <h4 class="text-white text-center mb-3">Login</h4>
         <div class="mb-3">
-          <input
+          <Field
             type="text"
             id="email"
+            name="email"
             placeholder="Email"
             class="form-control p-2"
           />
+          <ErrorMessage name="email" :class="{ 'text-danger': errors.email }" />
         </div>
         <div class="mb-3">
-          <input
+          <Field
             type="password"
             id="password"
+            name="password"
             placeholder="Password"
             class="form-control p-2"
+            autocomplete=""
+          />
+          <ErrorMessage
+            name="password"
+            :class="{ 'text-danger': errors.password }"
           />
         </div>
         <button
           class="form-control bg-secondary text-white mb-3 border-0"
-          type="button"
+          type="submit"
         >
           LOGIN
         </button>
@@ -49,7 +62,7 @@
             >Forgot Password???</router-link
           >
         </div>
-      </form>
+      </Form>
       <!-- end: form -->
     </div>
     <!-- end: column2 -->
@@ -57,7 +70,32 @@
   <!-- end:row -->
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+import { useStore } from "vuex";
+import * as yup from "yup";
+import { ErrorMessage, Field, Form } from "vee-validate";
+export default {
+  components: { ErrorMessage, Field, Form },
+  setup() {
+    const $store = useStore();
+    const schema = yup.object({
+      email: yup
+        .string()
+        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Enter correct mail id")
+        .required(),
+      password: yup
+        .string()
+        .min(6, "Password should have min 6 characters")
+        .matches(/^\S*$/, "No space required")
+        .required(),
+    });
+    function onLogin() {
+      // $store.dispatch("login");
+    }
+    return { onLogin, schema };
+  },
+};
+</script>
 
 <style scoped lang="scss">
 .logo {
