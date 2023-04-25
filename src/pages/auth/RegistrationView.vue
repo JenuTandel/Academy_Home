@@ -83,9 +83,16 @@
           <tr>
             <td><label class="text-white me-2">Country</label></td>
             <td>
-              <span class="text-white me-2">:</span
-              ><select>
+              <span class="text-white me-2">:</span>
+              <select @change="onCountrySelect">
                 <option value="">Select Country</option>
+                <option
+                  v-for="country in countryData"
+                  :key="country.id"
+                  :value="country.id"
+                >
+                  {{ country.name }}
+                </option>
               </select>
             </td>
           </tr>
@@ -93,8 +100,15 @@
             <td><label class="text-white me-2">State</label></td>
             <td>
               <span class="text-white me-2">:</span
-              ><select>
+              ><select name="state" @change="onSelectState">
                 <option value="">Select State</option>
+                <option
+                  v-for="state in statesData"
+                  :key="state.id"
+                  :value="state.id"
+                >
+                  {{ state.name }}
+                </option>
               </select>
             </td>
           </tr>
@@ -104,6 +118,9 @@
               <span class="text-white me-2">:</span
               ><select>
                 <option value="">Select City</option>
+                <option v-for="city in citiesData" :key="city.id">
+                  {{ city.name }}
+                </option>
               </select>
             </td>
           </tr>
@@ -158,7 +175,7 @@
 import { useStore } from "vuex";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 export default {
   components: {
     Form,
@@ -167,7 +184,6 @@ export default {
   },
   setup() {
     const $store = useStore();
-
     const firstname = ref("");
     const lastname = ref("");
     const email = ref("");
@@ -178,6 +194,9 @@ export default {
     const phoneno = ref("");
     const skills = ref("");
 
+    $store.dispatch("location/country");
+
+    // Form validations
     const schema = yup.object({
       firstname: yup
         .string()
@@ -201,6 +220,7 @@ export default {
         .matches(/^[0-9]{10}$/, "Enter correct contact number")
         .required(),
     });
+
     function onRegistration() {
       $store.dispatch("registration", {
         firstname: firstname.value,
@@ -214,8 +234,37 @@ export default {
         skills: skills.value,
       });
     }
+
+    //To get all countries
+    const countryData = computed(() => {
+      return $store.getters["location/getCountries"];
+    });
+
+    //To get all states according to country
+    function onCountrySelect(event: any) {
+      const countryId = event.target.value;
+      $store.dispatch("location/state", countryId);
+    }
+    const statesData = computed(() => {
+      return $store.getters["location/getStates"];
+    });
+
+    //To get all cities according to states
+    function onSelectState(event: any) {
+      const stateId = event.target.value;
+      $store.dispatch("location/city", stateId);
+    }
+    const citiesData = computed(() => {
+      return $store.getters["location/getCities"];
+    });
+
     return {
       onRegistration,
+      onCountrySelect,
+      onSelectState,
+      countryData,
+      statesData,
+      citiesData,
       schema,
       firstname,
       lastname,
