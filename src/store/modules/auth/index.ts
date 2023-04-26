@@ -3,7 +3,11 @@ import getters from "./getters";
 import mutations from "./mutations";
 export default {
   state() {
-    return {};
+    return {
+      isLogin: false,
+      token: "",
+      userId: "",
+    };
   },
   mutations,
   actions,

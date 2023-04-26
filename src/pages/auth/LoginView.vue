@@ -1,5 +1,8 @@
 <template>
   <!-- start: row -->
+  <base-dialog :show="!!error" title="Error" @close="handleError">
+    <p>{{ error }}</p>
+  </base-dialog>
   <div class="row gx-0 bg-light h-100">
     <!-- start: column1 -->
     <div class="col-6">
@@ -16,7 +19,7 @@
       <!-- start: form -->
       <Form
         class="rounded border p-3"
-        @submit.prevent="onLogin"
+        @submit="onLogin"
         :validation-schema="schema"
         v-slot="{ errors }"
       >
@@ -72,12 +75,16 @@
 
 <script lang="ts">
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { ErrorMessage, Field, Form } from "vee-validate";
+import { ref } from "vue";
 export default {
   components: { ErrorMessage, Field, Form },
   setup() {
     const $store = useStore();
+    const $router = useRouter();
+    const error = ref(null);
     const schema = yup.object({
       email: yup
         .string()
@@ -89,10 +96,23 @@ export default {
         .matches(/^\S*$/, "No space required")
         .required(),
     });
-    function onLogin() {
-      // $store.dispatch("login");
+    async function onLogin(data: any) {
+      try {
+        await $store.dispatch("login", {
+          email: data.email,
+          password: data.password,
+        });
+      } catch (err: any) {
+        error.value = err.response.data.error.message;
+      }
+      if (!error.value) {
+        $router.push("/home");
+      }
     }
-    return { onLogin, schema };
+    function handleError() {
+      error.value = null;
+    }
+    return { onLogin, schema, error, handleError };
   },
 };
 </script>

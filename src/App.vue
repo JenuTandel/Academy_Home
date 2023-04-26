@@ -11,12 +11,18 @@
 
 <script lang="ts">
 import TheHeader from "./components/core/TheHeader.vue";
+import { computed, watch } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 export default {
   components: {
     TheHeader,
   },
   setup() {
-    return {};
+    const $store = useStore();
+    $store.dispatch("tryLogin");
+    $store.getters.isLogin;
   },
 };
 </script>

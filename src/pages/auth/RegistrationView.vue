@@ -1,4 +1,7 @@
 <template>
+  <base-dialog :show="!!error" title="Error" @close="handleError">
+    <p>{{ error }}</p>
+  </base-dialog>
   <!-- start: row -->
   <div class="row gx-0 h-100 bg-light">
     <!-- start: column1 -->
@@ -15,7 +18,8 @@
       <!-- start: form -->
       <Form
         class="rounded border p-3"
-        @submit.prevent="onRegistration"
+        ref="registrationForm"
+        @submit="onRegistration"
         :validation-schema="schema"
         v-slot="{ errors }"
       >
@@ -29,7 +33,6 @@
             class="form-control"
             placeholder="Firstname"
             name="firstname"
-            v-model.trim="firstname"
           />
           <ErrorMessage
             name="firstname"
@@ -43,7 +46,6 @@
             class="form-control"
             placeholder="Lastname"
             name="lastname"
-            v-model.trim="lastname"
           />
           <ErrorMessage
             name="lastname"
@@ -57,7 +59,6 @@
             class="form-control"
             placeholder="Email"
             name="email"
-            v-model="email"
           />
           <ErrorMessage
             name="email"
@@ -72,7 +73,6 @@
             placeholder="Password"
             name="password"
             autocomplete=""
-            v-model="password"
           />
           <ErrorMessage
             name="password"
@@ -84,7 +84,8 @@
             <td><label class="text-white me-2">Country</label></td>
             <td>
               <span class="text-white me-2">:</span>
-              <select @change="onCountrySelect">
+              <Field @change="onCountrySelect" name="country" as="select">
+                <!-- v-model="country" -->
                 <option value="">Select Country</option>
                 <option
                   v-for="country in countryData"
@@ -93,14 +94,14 @@
                 >
                   {{ country.name }}
                 </option>
-              </select>
+              </Field>
             </td>
           </tr>
           <tr>
             <td><label class="text-white me-2">State</label></td>
             <td>
               <span class="text-white me-2">:</span
-              ><select name="state" @change="onSelectState">
+              ><Field name="state" @change="onSelectState" as="select">
                 <option value="">Select State</option>
                 <option
                   v-for="state in statesData"
@@ -109,19 +110,23 @@
                 >
                   {{ state.name }}
                 </option>
-              </select>
+              </Field>
             </td>
           </tr>
           <tr>
             <td><label class="text-white me-2">City</label></td>
             <td>
               <span class="text-white me-2">:</span
-              ><select>
+              ><Field name="city" as="select">
                 <option value="">Select City</option>
-                <option v-for="city in citiesData" :key="city.id">
+                <option
+                  v-for="city in citiesData"
+                  :key="city.id"
+                  :value="city.id"
+                >
                   {{ city.name }}
                 </option>
-              </select>
+              </Field>
             </td>
           </tr>
         </table>
@@ -133,7 +138,6 @@
             class="form-control"
             placeholder="Contact Number"
             name="phoneno"
-            v-model="phoneno"
           />
           <ErrorMessage
             name="phoneno"
@@ -151,7 +155,6 @@
             class="form-control"
             placeholder="Add your skill here"
             name="skills"
-            v-model="skills"
           />
         </div>
         <button
@@ -173,9 +176,10 @@
 </template>
 <script lang="ts">
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 export default {
   components: {
     Form,
@@ -184,16 +188,8 @@ export default {
   },
   setup() {
     const $store = useStore();
-    const firstname = ref("");
-    const lastname = ref("");
-    const email = ref("");
-    const password = ref("");
-    const country = ref("");
-    const state = ref("");
-    const city = ref("");
-    const phoneno = ref("");
-    const skills = ref("");
-
+    const $router = useRouter();
+    const error = ref(null);
     $store.dispatch("location/country");
 
     // Form validations
@@ -219,20 +215,43 @@ export default {
         .string()
         .matches(/^[0-9]{10}$/, "Enter correct contact number")
         .required(),
+      country: yup.string(),
+      state: yup.string(),
+      city: yup.string(),
     });
 
-    function onRegistration() {
-      $store.dispatch("registration", {
-        firstname: firstname.value,
-        lastname: lastname.value,
-        email: email.value,
-        password: password.value,
-        country: country.value,
-        state: state.value,
-        city: city.value,
-        phoneno: phoneno.value,
-        skills: skills.value,
-      });
+    async function onRegistration(data: any, { resetForm }: any) {
+      // const a = countryData.value.find((res: any) => (res.id = data.country));
+      // console.log(a.name);
+
+      try {
+        await $store.dispatch("registration", {
+          firstname: data.firstname,
+          lastname: data.lastname,
+          email: data.email,
+          password: data.password,
+          countryId: data.country,
+          stateId: data.state,
+          cityId: data.city,
+          phoneno: data.phoneno,
+          skills: data.skills,
+        });
+        await $store.dispatch("signup", {
+          email: data.email,
+          password: data.password,
+        });
+      } catch (err: any) {
+        error.value = err.response.data.error.message;
+      }
+      if (!error.value) {
+        resetForm();
+        $router.push("/login");
+      }
+    }
+
+    //For close the dialog
+    function handleError() {
+      error.value = null;
     }
 
     //To get all countries
@@ -262,19 +281,12 @@ export default {
       onRegistration,
       onCountrySelect,
       onSelectState,
+      handleError,
       countryData,
       statesData,
       citiesData,
       schema,
-      firstname,
-      lastname,
-      email,
-      password,
-      country,
-      state,
-      city,
-      phoneno,
-      skills,
+      error,
     };
   },
 };
