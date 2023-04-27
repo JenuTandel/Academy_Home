@@ -6,4 +6,7 @@ export default {
     state.token = payload.token;
     state.userId = payload.userId;
   },
+  isAdmin(state: any, payload: any) {
+    state.isAdmin = payload;
+  },
 };

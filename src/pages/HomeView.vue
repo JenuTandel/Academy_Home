@@ -16,9 +16,30 @@
         type="button"
         class="btn btn-secondary text-white fw-semibold px-5 py-2"
       >
-        <span class="fs-5"> Get Started </span>
+        <span class="fs-5" @click="onGetStarted"> Get Started </span>
       </button>
     </div>
   </div>
 </template>
-<script lang="ts"></script>
+<script lang="ts">
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+export default {
+  setup() {
+    const $router = useRouter();
+    const $store = useStore();
+    const isLogin = $store.getters.isLogin;
+
+    function onGetStarted() {
+      if (!isLogin) {
+        $router.push("/login");
+      } else {
+        $router.push("/courses");
+      }
+    }
+    return {
+      onGetStarted,
+    };
+  },
+};
+</script>

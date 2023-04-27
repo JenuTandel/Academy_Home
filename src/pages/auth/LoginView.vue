@@ -1,7 +1,11 @@
 <template>
   <!-- start: row -->
   <base-dialog :show="!!error" title="Error" @close="handleError">
-    <p>{{ error }}</p>
+    <template #header></template>
+    <template #default>
+      <p>{{ error }}</p>
+    </template>
+    <template #action></template>
   </base-dialog>
   <div class="row gx-0 bg-light h-100">
     <!-- start: column1 -->
@@ -97,6 +101,9 @@ export default {
         .required(),
     });
     async function onLogin(data: any) {
+      if (data.email == "admin@1rivet.com" && data.password == "Admin@123") {
+        localStorage.setItem("role", "admin");
+      }
       try {
         await $store.dispatch("login", {
           email: data.email,

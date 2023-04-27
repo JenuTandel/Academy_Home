@@ -7,6 +7,7 @@ export default {
       isLogin: false,
       token: "",
       userId: "",
+      isAdmin: false,
     };
   },
   mutations,

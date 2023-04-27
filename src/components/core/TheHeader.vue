@@ -9,6 +9,12 @@
     <li class="nav-item">
       <router-link to="/contact-us" class="nav-link">Contact Us</router-link>
     </li>
+    <li class="nav-item">
+      <router-link to="/courses" class="nav-link">Courses</router-link>
+    </li>
+    <li class="nav-item" v-if="isAdmin">
+      <router-link to="/courses" class="nav-link">Users</router-link>
+    </li>
     <li class="nav-item" v-if="!visibleLogout">
       <router-link to="/login" class="nav-link">Login</router-link>
     </li>
@@ -28,6 +34,15 @@ import { useStore } from "vuex";
 export default {
   setup() {
     const $store = useStore();
+
+    const isAdmin = computed(() => {
+      return $store.getters.isAdmin;
+    });
+
+    watch(isAdmin, () => {
+      return isAdmin.value;
+    });
+
     const visibleLogout = computed(() => {
       return $store.getters.isLogin;
     });
@@ -42,6 +57,7 @@ export default {
     return {
       visibleLogout,
       onLogout,
+      isAdmin,
     };
   },
 };

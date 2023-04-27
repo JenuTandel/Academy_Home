@@ -1,6 +1,10 @@
 <template>
   <base-dialog :show="!!error" title="Error" @close="handleError">
-    <p>{{ error }}</p>
+    <template #header></template>
+    <template #default>
+      <p>{{ error }}</p>
+    </template>
+    <template #action></template>
   </base-dialog>
   <!-- start: row -->
   <div class="row gx-0 h-100 bg-light">

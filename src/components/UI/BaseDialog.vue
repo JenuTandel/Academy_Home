@@ -1,14 +1,18 @@
 <template>
   <div v-if="show" class="backdrop" @click="onClose"></div>
   <dialog open v-if="show">
-    <header class="bg-danger">
-      <h2>{{ title }}</h2>
+    <header class="bg-danger" v-if="$slots.header">
+      <slot name="header">
+        <h2>{{ title }}</h2>
+      </slot>
     </header>
     <section>
       <slot></slot>
     </section>
-    <menu>
-      <button class="btn btn-primary" @click="onClose">Close</button>
+    <menu v-if="$slots.action">
+      <slot name="action">
+        <button class="btn btn-primary" @click="onClose">Close</button>
+      </slot>
     </menu>
   </dialog>
 </template>
@@ -16,7 +20,7 @@
 export default {
   props: ["show", "title"],
   emits: ["close"],
-  setup(_, context) {
+  setup(_: any, context: any) {
     function onClose() {
       context.emit("close");
     }
@@ -39,7 +43,7 @@ export default {
 dialog {
   position: fixed;
   top: 20%;
-  width: 50%;
+  width: 40%;
   z-index: 100;
   border-radius: 12px;
   border: none;

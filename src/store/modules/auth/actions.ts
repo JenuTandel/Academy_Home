@@ -42,6 +42,9 @@ export default {
         localStorage.setItem("token", res.data.idToken),
           localStorage.setItem("userId", res.data.localId),
           localStorage.setItem("tokenExpiration", expirationDate);
+        if (localStorage.getItem("role") == "admin") {
+          context.commit("isAdmin", true);
+        }
         context.commit("isLogin", true);
       })
       .catch((err) => {
@@ -66,6 +69,8 @@ export default {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
     localStorage.removeItem("tokenExpiration");
+    localStorage.removeItem("role");
     context.commit("isLogin", false);
+    context.commit("isAdmin", false);
   },
 };
