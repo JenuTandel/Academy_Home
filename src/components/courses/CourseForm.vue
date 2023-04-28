@@ -8,6 +8,7 @@
       @submit="onSubmit"
       :validation-schema="schema"
       v-slot="{ errors }"
+      :initial-values="formInit.a"
     >
       <div class="mb-3">
         <Field
@@ -75,9 +76,9 @@
 </template>
 <script lang="ts">
 import * as yup from "yup";
-import { Form, Field, ErrorMessage } from "vee-validate";
+import { Form, Field, ErrorMessage, useForm } from "vee-validate";
 import { useStore } from "vuex";
-import { ref as refrence } from "vue";
+import { ref as refrence, reactive, onMounted } from "vue";
 import { storage } from "./../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -87,7 +88,28 @@ export default {
     Field,
     ErrorMessage,
   },
-  setup(_: any, context: any) {
+  props: ["patchCourse", "isEdit", "updateId"],
+  setup(props: any, context: any) {
+    const formInit = reactive({ a: {} });
+
+    onMounted(() => {
+      if (props.isEdit) {
+        // formInit.a = props.patchCourse;
+        formInit.a = {
+          ...props.patchCourse,
+          courseImage: props.patchCourse.courseImage?._value,
+        };
+        console.log(...props.patchCourse);
+      } else {
+        formInit.a = {
+          courseName: "",
+          courseDetails: "",
+          courseImage: "",
+          timeDuration: "",
+        };
+      }
+    });
+
     const $store = useStore();
     const imageUrl = refrence("");
     const schema = yup.object({
@@ -97,31 +119,44 @@ export default {
       courseImage: yup.string(),
     });
     async function onSubmit(data: any) {
-      await $store.dispatch("courses/addCourse", {
-        ...data,
-        courseImage: imageUrl,
-      });
+      if (props.updateId) {
+        await $store.dispatch("courses/updateCourse", {
+          id: props.updateId,
+          courseName: data.courseName,
+          courseDetails: data.courseDetails,
+          timeDuration: data.timeDuration,
+          courseImage: imageUrl,
+        });
+      } else {
+        await $store.dispatch("courses/addCourse", {
+          ...data,
+          courseImage: imageUrl,
+        });
+      }
       context.emit("closeDialog", true);
+      $store.dispatch("courses/getCourses");
     }
     function onCancel() {
       context.emit("closeDialog", true);
     }
     function handleFileUpload(event: any) {
       const file = event.target.files[0];
-      console.log(file);
       const storageRef = ref(storage, file.name);
       uploadBytes(storageRef, file).then(() => {
-        // console.log("uploaded");
-      });
-
-      setTimeout(() => {
         getDownloadURL(ref(storage, file.name)).then((url) => {
           imageUrl.value = url;
-          // console.log(url);
         });
-      }, 1000);
+      });
     }
-    return { schema, onSubmit, onCancel, handleFileUpload, imageUrl };
+    return {
+      schema,
+      onSubmit,
+      onCancel,
+      handleFileUpload,
+      imageUrl,
+      useForm,
+      formInit,
+    };
   },
 };
 </script>
