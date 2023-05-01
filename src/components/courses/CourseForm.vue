@@ -8,7 +8,7 @@
       @submit="onSubmit"
       :validation-schema="schema"
       v-slot="{ errors }"
-      :initial-values="formInit.a"
+      :initial-values="formInit.data"
     >
       <div class="mb-3">
         <Field
@@ -52,6 +52,19 @@
       </div>
       <div class="mb-3">
         <Field
+          type="text"
+          id="authorName"
+          name="authorName"
+          class="form-control"
+          placeholder="Author Name"
+        />
+        <ErrorMessage
+          name="authorName"
+          :class="{ 'text-danger': errors.authorName }"
+        />
+      </div>
+      <div class="mb-3">
+        <Field
           type="file"
           name="courseImage"
           id="courseImage"
@@ -63,8 +76,9 @@
           :class="{ 'text-danger': errors.courseImage }"
         />
       </div>
-      <div class="w-100">
+      <div class="d-flex w-100">
         <img :src="imageUrl" class="mb-2" />
+        <p class="text-danger">{{ uploadingImage }}</p>
       </div>
       <button type="submit" class="btn btn-success me-2">Submit</button>
       <button type="reset" class="btn btn-warning me-2">Reset</button>
@@ -90,22 +104,36 @@ export default {
   },
   props: ["patchCourse", "isEdit", "updateId"],
   setup(props: any, context: any) {
-    const formInit = reactive({ a: {} });
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "Decembers",
+    ];
+    const formInit = reactive({ data: {} });
+    const updateId = refrence(props.updateId);
+    const isEditValue = refrence(props.isEdit);
+    const uploadingImage = refrence("");
 
     onMounted(() => {
-      if (props.isEdit) {
-        // formInit.a = props.patchCourse;
-        formInit.a = {
-          ...props.patchCourse,
-          courseImage: props.patchCourse.courseImage?._value,
-        };
-        console.log(...props.patchCourse);
+      if (isEditValue.value) {
+        formInit.data = props.patchCourse;
+        imageUrl.value = props.patchCourse.courseImage;
       } else {
-        formInit.a = {
+        formInit.data = {
           courseName: "",
           courseDetails: "",
           courseImage: "",
           timeDuration: "",
+          authorName: "",
         };
       }
     });
@@ -116,20 +144,26 @@ export default {
       courseName: yup.string().required(),
       courseDetails: yup.string().required(),
       timeDuration: yup.string().required(),
+      authorName: yup.string().required(),
       courseImage: yup.string(),
     });
     async function onSubmit(data: any) {
-      if (props.updateId) {
+      if (updateId.value) {
         await $store.dispatch("courses/updateCourse", {
           id: props.updateId,
           courseName: data.courseName,
           courseDetails: data.courseDetails,
           timeDuration: data.timeDuration,
-          courseImage: imageUrl,
+          authorName: data.authorName,
+          courseImage: { _value: imageUrl.value },
+          courseDate: `${
+            monthNames[new Date().getMonth()]
+          } ${new Date().getFullYear()}`,
         });
       } else {
         await $store.dispatch("courses/addCourse", {
           ...data,
+          courseDate: new Date(),
           courseImage: imageUrl,
         });
       }
@@ -140,11 +174,15 @@ export default {
       context.emit("closeDialog", true);
     }
     function handleFileUpload(event: any) {
+      if (event) {
+        uploadingImage.value = "uploading....";
+      }
       const file = event.target.files[0];
       const storageRef = ref(storage, file.name);
       uploadBytes(storageRef, file).then(() => {
         getDownloadURL(ref(storage, file.name)).then((url) => {
           imageUrl.value = url;
+          uploadingImage.value = "";
         });
       });
     }
@@ -156,6 +194,7 @@ export default {
       imageUrl,
       useForm,
       formInit,
+      uploadingImage,
     };
   },
 };

@@ -239,6 +239,7 @@ export default {
           cityId: data.city,
           phoneno: data.phoneno,
           skills: data.skills,
+          joiningDate: new Date(),
         });
         await $store.dispatch("signup", {
           email: data.email,

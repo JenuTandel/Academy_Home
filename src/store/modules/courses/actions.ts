@@ -29,7 +29,9 @@ export default {
             courseName: res[key].courseName,
             courseDetails: res[key].courseDetails,
             timeDuration: res[key].timeDuration,
+            authorName: res[key].authorName,
             courseImage: res[key].courseImage?._value,
+            courseDate: res[key].courseDate,
           };
           courses.push(course);
         }
@@ -53,13 +55,14 @@ export default {
         `https://academy-home-default-rtdb.firebaseio.com/courses/${id}.json`
       )
       .then((res) => {
-        context.commit("courseData", res.data);
+        context.commit("courseData", {
+          ...res.data,
+          courseImage: res.data.courseImage._value,
+        });
       });
   },
   async updateCourse(context: any, payload: any) {
     const id = payload.id;
-    console.log(id);
-
     await axios
       .patch(
         `https://academy-home-default-rtdb.firebaseio.com/courses/${id}.json`,
@@ -67,12 +70,12 @@ export default {
           courseName: payload.courseName,
           courseDetails: payload.courseDetails,
           timeDuration: payload.timeDuration,
+          authorName: payload.authorName,
           courseImage: payload.courseImage,
+          courseDate: payload.courseDate,
         }
       )
       .then((res) => {
-        console.log(res);
-
         context.commit("courseData", res.data);
       });
   },

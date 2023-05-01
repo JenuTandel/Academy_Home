@@ -13,7 +13,7 @@
       <router-link to="/courses" class="nav-link">Courses</router-link>
     </li>
     <li class="nav-item" v-if="isAdmin">
-      <router-link to="/courses" class="nav-link">Users</router-link>
+      <router-link to="/users" class="nav-link">Users</router-link>
     </li>
     <li class="nav-item" v-if="!visibleLogout">
       <router-link to="/login" class="nav-link">Login</router-link>
@@ -31,10 +31,11 @@
 <script lang="ts">
 import { watch, computed } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   setup() {
     const $store = useStore();
-
+    const $router = useRouter();
     const isAdmin = computed(() => {
       return $store.getters.isAdmin;
     });
@@ -51,8 +52,9 @@ export default {
       return visibleLogout.value;
     });
 
-    function onLogout() {
-      $store.dispatch("logout");
+    async function onLogout() {
+      await $store.dispatch("logout");
+      $router.push("/login");
     }
     return {
       visibleLogout,
@@ -64,7 +66,8 @@ export default {
 </script>
 <style scoped>
 .active,
-.active:focus {
+.active:focus,
+.nav-link:hover {
   color: orange;
 }
 </style>

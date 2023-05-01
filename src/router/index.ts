@@ -4,7 +4,8 @@ import HomeView from "@/pages/HomeView.vue";
 import AboutView from "@/pages/AboutView.vue";
 import ContactView from "@/pages/ContactView.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
-import CourseForm from "@/components/courses/CourseForm.vue";
+// import CourseForm from "@/components/courses/CourseForm.vue";
+import CourseDetails from "@/pages/courses/CourseDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -34,12 +35,15 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/courses",
     component: () => import("@/pages/courses/CoursesList.vue"),
-    children: [
-      {
-        path: "/courses/form",
-        component: CourseForm,
-      },
-    ],
+  },
+  {
+    path: "/courses/details/:id",
+    component: CourseDetails,
+    props: true,
+  },
+  {
+    path: "/users",
+    component: () => import("@/pages/admin/UsersView.vue"),
   },
   {
     path: "/:notfound(.*)",
