@@ -239,12 +239,12 @@ export default {
           cityId: data.city,
           phoneno: data.phoneno,
           skills: data.skills,
-          joiningDate: new Date(),
-        });
-        await $store.dispatch("signup", {
-          email: data.email,
-          password: data.password,
-        });
+          joiningDate: `${new Date().getDate()}/ ${new Date().getMonth()}/ ${new Date().getFullYear()}`,
+        }),
+          await $store.dispatch("signup", {
+            email: data.email,
+            password: data.password,
+          });
       } catch (err: any) {
         error.value = err.response.data.error.message;
       }

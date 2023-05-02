@@ -163,7 +163,9 @@ export default {
       } else {
         await $store.dispatch("courses/addCourse", {
           ...data,
-          courseDate: new Date(),
+          courseDate: `${
+            monthNames[new Date().getMonth()]
+          } ${new Date().getFullYear()}`,
           courseImage: imageUrl,
         });
       }

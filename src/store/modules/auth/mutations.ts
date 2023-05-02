@@ -9,4 +9,8 @@ export default {
   isAdmin(state: any, payload: any) {
     state.isAdmin = payload;
   },
+  getUsers(state: any, payload: any) {
+    state.users = payload;
+    console.log(state.users);
+  },
 };

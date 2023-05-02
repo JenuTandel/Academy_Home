@@ -8,6 +8,7 @@ export default {
       token: "",
       userId: "",
       isAdmin: false,
+      users: [],
     };
   },
   mutations,

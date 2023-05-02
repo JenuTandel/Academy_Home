@@ -62,6 +62,9 @@ export default {
         token: token,
         userId: userId,
       });
+      if (localStorage.getItem("role") == "admin") {
+        context.commit("isAdmin", true);
+      }
       context.commit("isLogin", true);
     }
   },
@@ -72,5 +75,35 @@ export default {
     localStorage.removeItem("role");
     context.commit("isLogin", false);
     context.commit("isAdmin", false);
+  },
+  async getUsers(context: any) {
+    await axios
+      .get("https://academy-home-default-rtdb.firebaseio.com/registration.json")
+      .then((res) => {
+        const users = [];
+        for (const key in res.data) {
+          const user = {
+            id: key,
+            firstname: res.data[key].firstname,
+            lastname: res.data[key].lastname,
+            email: res.data[key].email,
+            phoneno: res.data[key].phoneno,
+            joiningDate: res.data[key].joiningDate,
+            skills: res.data[key].skills,
+          };
+          users.push(user);
+        }
+        context.commit("getUsers", users);
+      });
+  },
+
+  async removeUser(_: any, payload: any) {
+    const id = payload;
+    await axios.delete(
+      `https://academy-home-default-rtdb.firebaseio.com/registration/${id}.json`
+    );
+    await axios.delete(
+      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBDWp5tagLwUNX3kUOpPO2cCZh0VV00s"
+    );
   },
 };

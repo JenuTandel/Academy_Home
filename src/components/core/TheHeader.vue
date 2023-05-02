@@ -1,32 +1,37 @@
 <template>
-  <ul class="nav bg-primary justify-content-end">
-    <li class="nav-item">
-      <router-link to="/home" class="nav-link">Home</router-link>
-    </li>
-    <li class="nav-item">
-      <router-link to="/about-us" class="nav-link">About Us</router-link>
-    </li>
-    <li class="nav-item">
-      <router-link to="/contact-us" class="nav-link">Contact Us</router-link>
-    </li>
-    <li class="nav-item">
-      <router-link to="/courses" class="nav-link">Courses</router-link>
-    </li>
-    <li class="nav-item" v-if="isAdmin">
-      <router-link to="/users" class="nav-link">Users</router-link>
-    </li>
-    <li class="nav-item" v-if="!visibleLogout">
-      <router-link to="/login" class="nav-link">Login</router-link>
-    </li>
-    <li class="nav-item" v-if="!visibleLogout">
-      <router-link to="/registration" class="nav-link"
-        >Registration</router-link
-      >
-    </li>
-    <li class="nav-item" v-if="visibleLogout" @click="onLogout">
-      <a class="nav-link">Logout</a>
-    </li>
-  </ul>
+  <div class="nav bg-primary justify-content-between">
+    <figure class="logo">
+      <img src="../../assets/images/logo.png" alt="logo" />
+    </figure>
+    <ul class="nav bg-primary justify-content-end">
+      <li class="nav-item">
+        <router-link to="/home" class="nav-link">Home</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link to="/about-us" class="nav-link">About Us</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link to="/contact-us" class="nav-link">Contact Us</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link to="/courses" class="nav-link">Courses</router-link>
+      </li>
+      <li class="nav-item" v-if="isAdmin">
+        <router-link to="/users" class="nav-link">Users</router-link>
+      </li>
+      <li class="nav-item" v-if="!visibleLogout">
+        <router-link to="/login" class="nav-link">Login</router-link>
+      </li>
+      <li class="nav-item" v-if="!visibleLogout">
+        <router-link to="/registration" class="nav-link"
+          >Registration</router-link
+        >
+      </li>
+      <li class="nav-item" v-if="visibleLogout" @click="onLogout">
+        <a class="nav-link">Logout</a>
+      </li>
+    </ul>
+  </div>
 </template>
 <script lang="ts">
 import { watch, computed } from "vue";
@@ -64,10 +69,17 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
 .active,
 .active:focus,
 .nav-link:hover {
   color: orange;
+}
+.logo {
+  width: 100px;
+  img {
+    height: 100%;
+    width: 100%;
+  }
 }
 </style>

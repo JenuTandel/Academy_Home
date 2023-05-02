@@ -30,23 +30,33 @@
           Add New Course
         </button>
       </div>
-      <div class="d-flex justify-content-end mt-3">
-        <input type="text" class="search form-control" placeholder="search" />
+      <h1>Courses</h1>
+      <div class="my-3">
+        <input
+          type="text"
+          class="search form-control"
+          placeholder="Search course"
+          v-model="searchInput"
+        />
       </div>
       <table class="table table-striped">
         <thead>
           <tr>
+            <th>Sr. No.</th>
             <th>Course Name</th>
             <th>Course Details</th>
             <th>Course Time Duration</th>
+            <th>Author Name</th>
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-for="course in allCourses" :key="course.id">
+        <tbody class="overflow-auto">
+          <tr v-for="(course, index) in courses" :key="index">
+            <td>{{ index + 1 }}</td>
             <td>{{ course.courseName }}</td>
             <td>{{ course.courseDetails }}</td>
             <td>{{ course.timeDuration }}</td>
+            <td>{{ course.authorName }}</td>
             <td class="text-nowrap">
               <button
                 type="button"
@@ -79,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { computed, provide, reactive, ref } from "vue";
+import { computed, provide, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
 import courseForm from "../../components/courses/CourseForm.vue";
 import courseItems from "../../components/courses/CourseItems.vue";
@@ -95,13 +105,34 @@ export default {
     const deleteId = ref("");
     const updateId = ref("");
     const patchData = reactive({ course: "" });
+    const searchInput = ref();
+    const courses = ref();
 
     const allCourses = computed(() => {
       return $store.getters["courses/Courses"];
     });
-    console.log(allCourses.value);
+    watch(allCourses, () => {
+      courses.value = allCourses.value;
+      console.log(courses);
+    });
+
+    watch(searchInput, () => {
+      //for search
+      if (!searchInput.value) {
+        courses.value = allCourses.value;
+      } else {
+        const searchValue = searchInput.value.toLowerCase();
+        courses.value = allCourses.value.filter(
+          (res: any) =>
+            res.courseName.toLowerCase().includes(searchValue) ||
+            res.courseDetails.toLowerCase().includes(searchValue) ||
+            res.authorName.toLowerCase().includes(searchValue)
+        );
+      }
+    });
 
     provide("allCourses", allCourses.value);
+
     const isAdmin = computed(() => {
       return localStorage.getItem("role");
     });
@@ -165,6 +196,8 @@ export default {
       updateId,
       isEdit,
       isAdmin,
+      searchInput,
+      courses,
     };
   },
 };
@@ -175,10 +208,10 @@ img {
   height: 100px;
   width: 150px;
 }
-.table {
+/* .table {
   width: 70%;
   margin: auto;
-}
+} */
 
 .search {
   width: 25%;

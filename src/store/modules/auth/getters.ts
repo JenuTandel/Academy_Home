@@ -5,4 +5,7 @@ export default {
   isAdmin(state: any) {
     return state.isAdmin;
   },
+  getUsers(state: any) {
+    return state.users;
+  },
 };

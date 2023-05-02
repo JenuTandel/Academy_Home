@@ -1,11 +1,13 @@
 <template>
-  <h2>Course Details</h2>
+  <h2 class="mb-3">Course Details</h2>
   <div class="img-wrapper">
     <img :src="details.course.courseImage" />
   </div>
   <p>{{ details.course.courseName }}</p>
   <p>{{ details.course.courseDetails }}</p>
   <p>{{ details.course.timeDuration }} Hrs</p>
+  <p>{{ details.course.authorName }}</p>
+  <button type="button" class="btn btn-secondary">Add more Details</button>
 </template>
 <script lang="ts">
 import { useRoute } from "vue-router";
