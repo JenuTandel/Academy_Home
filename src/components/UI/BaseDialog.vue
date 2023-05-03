@@ -1,20 +1,22 @@
 <template>
   <div v-if="show" class="backdrop" @click="onClose"></div>
-  <dialog open v-if="show">
-    <header class="bg-danger" v-if="$slots.header">
-      <slot name="header">
-        <h2>{{ title }}</h2>
-      </slot>
-    </header>
-    <section>
-      <slot></slot>
-    </section>
-    <menu v-if="$slots.action">
-      <slot name="action">
-        <button class="btn btn-primary" @click="onClose">Close</button>
-      </slot>
-    </menu>
-  </dialog>
+  <transition name="dialog">
+    <dialog open v-if="show">
+      <header class="bg-danger" v-if="$slots.header">
+        <slot name="header">
+          <h2>{{ title }}</h2>
+        </slot>
+      </header>
+      <section>
+        <slot></slot>
+      </section>
+      <menu v-if="$slots.action">
+        <slot name="action">
+          <button class="btn btn-primary" @click="onClose">Close</button>
+        </slot>
+      </menu>
+    </dialog>
+  </transition>
 </template>
 <script lang="ts">
 export default {
@@ -73,5 +75,22 @@ menu {
   display: flex;
   justify-content: flex-end;
   margin: 0;
+}
+
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0.5;
+  transform: scale(0.5);
+}
+.dialog-enter-to,
+.dialog-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+.dialog-enter-active {
+  transition: all 0.2s ease-out;
+}
+.dialog-leave-active {
+  transition: all 0.2s ease-in;
 }
 </style>

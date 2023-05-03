@@ -21,6 +21,7 @@
           <input
             type="text"
             id="email"
+            value="admin@1rivet.com"
             class="form-control"
             placeholder="Email"
           />

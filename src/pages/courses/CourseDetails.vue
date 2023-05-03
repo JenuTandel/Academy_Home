@@ -1,5 +1,8 @@
 <template>
   <section>
+    <base-dialog :show="dialogVisibility" @close="closeDialog">
+      <details-form></details-form>
+    </base-dialog>
     <h2 class="mb-3">Course Details</h2>
     <div class="img-wrapper">
       <img :src="details.course.courseImage" />
@@ -8,26 +11,36 @@
     <p>{{ details.course.courseDetails }}</p>
     <p>{{ details.course.timeDuration }} Hrs</p>
     <p>{{ details.course.authorName }}</p>
-    <button type="button" class="btn btn-secondary">Add more Details</button>
+    <button type="button" class="btn btn-secondary" @click="addDetails">
+      Add more Details
+    </button>
   </section>
 </template>
 <script lang="ts">
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
-import { reactive } from "vue";
-
+import { reactive, ref } from "vue";
+import DetailsForm from "@/components/courses/DetailsForm.vue";
 export default {
+  components: { DetailsForm },
   setup() {
     const $route = useRoute();
     const $store = useStore();
     const details = reactive({ course: "" });
+    const dialogVisibility = ref(false);
     getDetails();
 
+    function addDetails() {
+      dialogVisibility.value = true;
+    }
     async function getDetails() {
       await $store.dispatch("courses/getCourseById", $route.params.id);
       details.course = await $store.getters["courses/Course"];
     }
-    return { details };
+    function closeDialog() {
+      dialogVisibility.value = false;
+    }
+    return { details, addDetails, dialogVisibility, closeDialog };
   },
 };
 </script>
