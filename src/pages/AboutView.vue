@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column h-100">
+  <section class="d-flex flex-column h-100">
     <div class="image-wrapper">
       <img src="../assets/images/about.jpg" />
     </div>
@@ -36,7 +36,7 @@
       </div>
     </div>
     <!-- end: card-wrapper -->
-  </div>
+  </section>
 </template>
 <script lang="ts"></script>
 <style scoped lang="scss">

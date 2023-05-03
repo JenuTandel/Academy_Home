@@ -1,5 +1,5 @@
 <template>
-  <section class="p-3">
+  <section class="p-3 h-100 overflow-hidden">
     <base-dialog
       :show="deleteDialogVisibility"
       title="Delete"
@@ -24,64 +24,69 @@
         :updateId="updateId"
       ></course-form>
     </base-dialog>
-    <div v-if="isAdmin">
-      <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-primary" @click="onAddCourse()">
-          Add New Course
-        </button>
+    <div v-if="isAdmin" class="d-flex flex-column h-100 overflow-hidden">
+      <div>
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-primary" @click="onAddCourse()">
+            Add New Course
+          </button>
+        </div>
+        <h1>Courses</h1>
+        <div class="my-3">
+          <input
+            type="text"
+            class="search form-control"
+            placeholder="Search course"
+            v-model="searchInput"
+          />
+        </div>
       </div>
-      <h1>Courses</h1>
-      <div class="my-3">
-        <input
-          type="text"
-          class="search form-control"
-          placeholder="Search course"
-          v-model="searchInput"
-        />
+      <div class="table-wrapper flex-grow-1 overflow-auto">
+        <table class="table table-striped">
+          <thead class="bg-white position-sticky top-0">
+            <tr>
+              <th>Sr. No.</th>
+              <th>Course Name</th>
+              <th>Course Details</th>
+              <th>Course Time Duration</th>
+              <th>Author Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody class="tbody">
+            <tr v-for="(course, index) in courses" :key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ course.courseName }}</td>
+              <td>{{ course.courseDetails }}</td>
+              <td>{{ course.timeDuration }}</td>
+              <td>{{ course.authorName }}</td>
+              <td class="text-nowrap">
+                <button
+                  type="button"
+                  class="btn btn-success me-2"
+                  @click="onEdit(course.id)"
+                >
+                  Edit</button
+                ><button
+                  type="button"
+                  class="btn btn-danger me-2"
+                  @click="onDelete(course.id)"
+                >
+                  Delete
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-info"
+                  @click="onDetails(course.id)"
+                >
+                  Details
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Sr. No.</th>
-            <th>Course Name</th>
-            <th>Course Details</th>
-            <th>Course Time Duration</th>
-            <th>Author Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody class="overflow-auto">
-          <tr v-for="(course, index) in courses" :key="index">
-            <td>{{ index + 1 }}</td>
-            <td>{{ course.courseName }}</td>
-            <td>{{ course.courseDetails }}</td>
-            <td>{{ course.timeDuration }}</td>
-            <td>{{ course.authorName }}</td>
-            <td class="text-nowrap">
-              <button
-                type="button"
-                class="btn btn-success me-2"
-                @click="onEdit(course.id)"
-              >
-                Edit</button
-              ><button
-                type="button"
-                class="btn btn-danger me-2"
-                @click="onDelete(course.id)"
-              >
-                Delete
-              </button>
-              <button
-                type="button"
-                class="btn btn-info"
-                @click="onDetails(course.id)"
-              >
-                Details
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
     <course-items v-else :allCourses="allCourses"></course-items>
     <!-- <router-view></router-view> -->

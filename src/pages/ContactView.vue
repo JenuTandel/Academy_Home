@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column h-100">
+  <section class="d-flex flex-column h-100">
     <div class="image-wrapper">
       <img src="../assets/images/contact.jpg" />
     </div>
@@ -65,7 +65,7 @@
       </div>
     </div>
     <!-- end: contact footer -->
-  </div>
+  </section>
 </template>
 <script lang="ts"></script>
 
