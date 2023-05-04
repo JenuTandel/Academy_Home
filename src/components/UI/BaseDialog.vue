@@ -1,7 +1,7 @@
 <template>
   <div v-if="show" class="backdrop" @click="onClose"></div>
   <transition name="dialog">
-    <dialog open v-if="show">
+    <dialog open v-if="show" :style="customHeight">
       <header class="bg-danger" v-if="$slots.header">
         <slot name="header">
           <h2>{{ title }}</h2>
@@ -19,15 +19,23 @@
   </transition>
 </template>
 <script lang="ts">
+import { reactive } from "vue";
+
 export default {
-  props: ["show", "title"],
+  props: ["show", "title", "height"],
   emits: ["close"],
-  setup(_: any, context: any) {
+  setup(props: any, context: any) {
+    const customHeight = reactive({
+      height: `${props.height}%`,
+      overflow: "auto",
+    });
     function onClose() {
       context.emit("close");
     }
+
     return {
       onClose,
+      customHeight,
     };
   },
 };

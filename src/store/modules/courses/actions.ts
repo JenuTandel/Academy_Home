@@ -55,6 +55,10 @@ export default {
         `https://academy-home-default-rtdb.firebaseio.com/courses/${id}.json`
       )
       .then((res) => {
+        // for (const key in res.data) {
+        //   console.log(res.data[key][0].contentTitle);
+        // }
+
         context.commit("courseData", {
           ...res.data,
           courseImage: res.data.courseImage._value,
@@ -79,4 +83,28 @@ export default {
         context.commit("courseData", res.data);
       });
   },
+
+  async addLearningPoints(context: any, payload: any) {
+    const id = payload.id;
+    console.log(payload.learningPoint);
+    await axios
+      .patch(
+        `https://academy-home-default-rtdb.firebaseio.com/courses/${id}.json`,
+        { learningPoints: payload.learningPoint }
+      )
+      .then(() => {
+        context.dispatch("getCourseById", id);
+      });
+  },
+
+  // async getLearningPoints() {
+  //   const id = payload.id;
+  //   await axios
+  //     .get(
+  //       `https://academy-home-default-rtdb.firebaseio.com/courses/${id}.json`
+  //     )
+  //     .then((res) => {
+  //       console.log(res);
+  //     });
+  // },
 };
