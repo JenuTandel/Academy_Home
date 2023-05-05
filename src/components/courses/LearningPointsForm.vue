@@ -1,7 +1,6 @@
 <template>
   <form @submit.prevent="onSubmit">
     <div v-for="(field, index) in learningPoint" :key="index">
-      <label :for="'field-' + index"></label>
       <input
         :id="'field-' + index"
         :name="'field-' + index"

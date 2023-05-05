@@ -29,6 +29,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 * {
   padding: 0;
   margin: 0;

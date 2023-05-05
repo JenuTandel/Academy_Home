@@ -97,14 +97,30 @@ export default {
       });
   },
 
-  // async getLearningPoints() {
-  //   const id = payload.id;
-  //   await axios
-  //     .get(
-  //       `https://academy-home-default-rtdb.firebaseio.com/courses/${id}.json`
-  //     )
-  //     .then((res) => {
-  //       console.log(res);
-  //     });
-  // },
+  async addContentTitle(context: any, payload: any) {
+    const id = payload.id;
+    console.log(payload.title);
+    await axios
+      .post(
+        `https://academy-home-default-rtdb.firebaseio.com/courseDetails.json`,
+        { courseId: id, contentTitle: payload.title }
+      )
+      .then(() => {
+        //
+      });
+  },
+
+  async getContentTitle(context: any, payload: any) {
+    const id = payload.id;
+    await axios
+      .get(
+        `https://academy-home-default-rtdb.firebaseio.com/courseDetails.json`
+      )
+      .then((res) => {
+        console.log(...res.data);
+
+        // const d = res.data.filter((data: any) => data.courseId == id);
+        // console.log(d);
+      });
+  },
 };
