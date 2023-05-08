@@ -107,20 +107,65 @@ export default {
       )
       .then(() => {
         //
+        // context.dispatch("getContentTitle", id);
       });
   },
 
   async getContentTitle(context: any, payload: any) {
-    const id = payload.id;
     await axios
       .get(
         `https://academy-home-default-rtdb.firebaseio.com/courseDetails.json`
       )
       .then((res) => {
-        console.log(...res.data);
+        const details = [];
+        let data: any[] = [];
+        for (const key in res.data) {
+          const detail = {
+            id: key,
+            contentTitle: res.data[key].contentTitle,
+            courseId: res.data[key].courseId,
+          };
+          details.push(detail);
+          data = details.filter((res: any) => res.courseId == payload.id);
+        }
+        context.commit("getContentTitle", data);
+      });
+  },
 
-        // const d = res.data.filter((data: any) => data.courseId == id);
-        // console.log(d);
+  async addTopic(context: any, payload: any) {
+    const id = payload.id;
+    console.log(id);
+
+    await axios
+      .post(`https://academy-home-default-rtdb.firebaseio.com/Topics.json`, {
+        contentId: id,
+        topic: payload.topic,
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  },
+
+  async getTopics(context: any, payload: any) {
+    const id = payload;
+    console.log(id);
+
+    await axios
+      .get(`https://academy-home-default-rtdb.firebaseio.com/Topics.json`)
+      .then((res) => {
+        const topics = [];
+        // let data: any[] = [];
+        for (const key in res.data) {
+          const topic = {
+            id: key,
+            contentId: res.data[key].contentId,
+            topicname: res.data[key].topic?.topicname,
+          };
+          topics.push(topic);
+        }
+        // data = topics.filter((res: any) => res.contentId == id);
+        // context.commit("getContentTopics", data);
+        context.commit("getContentTopics", topics);
       });
   },
 };

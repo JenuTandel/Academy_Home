@@ -7,6 +7,7 @@
         class="form-control"
         id="topicname"
         placeholder="Topic name"
+        v-model="topicname"
       />
     </div>
     <div class="mb-3">
@@ -20,12 +21,32 @@
 </template>
 
 <script lang="ts">
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 export default {
-  setup(_: any, context: any) {
-    function onAdd() {
+  props: ["id"],
+  setup(props: any, context: any) {
+    const $store = useStore();
+    const topicname = ref();
+    const videofile = ref();
+    const topic = ref();
+    const id = computed(() => {
+      return props.id;
+    });
+
+    async function onAdd() {
+      topic.value = {
+        topicname: topicname.value,
+      };
+      await $store.dispatch("courses/addTopic", {
+        id: id.value,
+        topic: topic.value,
+      });
+      const topics = $store.dispatch("courses/getTopics", id.value);
+      context.emit("topics", topics);
       context.emit("close", true);
     }
-    return { onAdd };
+    return { onAdd, topicname, videofile };
   },
 };
 </script>

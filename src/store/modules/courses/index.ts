@@ -7,6 +7,8 @@ export default {
     return {
       courses: [],
       course: {},
+      contentTitles: [],
+      topics: [],
     };
   },
   mutations,

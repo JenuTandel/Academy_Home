@@ -1,5 +1,6 @@
 <template>
-  <section>
+  <section class="h-100 overflow-auto">
+    <!-- start: learningPoints dialog form -->
     <base-dialog
       :show="learningPointsDialogVisibility"
       @close="closeDialog"
@@ -10,9 +11,15 @@
         @close="closeDialog"
       ></learning-points-form>
     </base-dialog>
+    <!-- end: learningPoints dialog form -->
+
+    <!-- start: content topics form -->
     <base-dialog :show="contentDialogVisibility" @close="closeDialog">
-      <course-topic @close="closeDialog"> </course-topic>
+      <course-topic @close="closeDialog" :id="titleId"> </course-topic>
     </base-dialog>
+    <!-- end: content topics form -->
+
+    <!-- start: course all details -->
     <h2 class="mb-3">Course Details</h2>
     <div class="img-wrapper">
       <img :src="details.course.courseImage" />
@@ -32,10 +39,12 @@
     <button type="button" class="btn btn-secondary" @click="addSection">
       Add section
     </button>
+
+    <!-- start: accordian -->
     <div
       class="accordion"
       id="accordionExample"
-      v-for="(field, index) in content"
+      v-for="(field, index) in data"
       :key="index"
     >
       <div class="accordion-item">
@@ -51,9 +60,10 @@
             <div class="d-flex justify-content-between w-100">
               <form
                 class="d-flex"
-                @submit.prevent="onSaveTitle"
-                v-if="!details.course?.content?.contentTitle[index]?.value"
+                @submit.prevent="onSaveTitle(index)"
+                v-if="!data[index].contentTitle"
               >
+                <!-- v-if="!details.course?.content?.contentTitle[index]?.value" -->
                 <input
                   type="text"
                   :id="'field-' + index"
@@ -64,14 +74,14 @@
                 />
                 <button type="submit" class="btn btn-primary">Save</button>
               </form>
-              <p v-else>
-                {{ details.course?.content?.contentTitle[index]?.value }}
+              <p>
+                {{ data[index].contentTitle }}
               </p>
-              <!-- <p v-for="i in details.course.content.contentTitle" :key="i">
-                {{ i.value }}
-              </p> -->
-              <!-- <p>{{ details.course?.content.contentTitle }}</p> -->
-              <button type="button" class="btn btn-primary" @click="addContent">
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="addContent(data[index].id)"
+              >
                 Add content
               </button>
             </div>
@@ -79,15 +89,22 @@
         </h2>
         <div
           :id="`collapse-${index}`"
-          class="accordion-collapse collapse show"
+          class="accordion-collapse collapse"
           data-bs-parent="#accordionExample"
         >
-          <div class="accordion-body">
-            <!-- <p>{{ details.course?.content?.contentTitle[index]?.value }}</p> -->
-          </div>
+          <template v-for="topic in topics" :key="topic.id">
+            <div
+              class="accordion-body"
+              v-if="topic.contentId == data[index].id"
+            >
+              <p>{{ topic.topicname }}</p>
+            </div>
+          </template>
         </div>
       </div>
+      <!-- end: accordian -->
     </div>
+    <!-- start: course all details -->
   </section>
 </template>
 
@@ -108,18 +125,44 @@ export default {
     const title = ref();
     const learningPointsDialogVisibility = ref(false);
     const contentDialogVisibility = ref(false);
+    const titleId = ref();
     const computedDetails = computed(() => {
       return $store.getters["courses/Course"];
     });
     // const contentTitle = computed(()=>{
     //   return $store.getters["course/Course"]
     // })
-    const content = reactive([{ value: "" }]);
+    // const content = reactive([{ value: "" }]);
+    const data = ref();
+    data.value = [{ value: "" }];
+    const topics = ref();
+
+    const contentTitles = computed(() => {
+      return $store.getters["courses/ContentTitles"];
+    });
+    watch(
+      contentTitles,
+      () => {
+        data.value = contentTitles.value;
+      },
+      { immediate: true }
+    );
+    const topicData = computed(() => {
+      return $store.getters["courses/Topics"];
+    });
+
+    watch(
+      topicData,
+      () => {
+        topics.value = topicData.value;
+      },
+      { immediate: true }
+    );
+    console.log(topics.value);
 
     function addSection() {
-      content.push({ value: "" });
+      data.value.push({ value: "" });
     }
-
     watch(
       computedDetails,
       () => {
@@ -128,16 +171,16 @@ export default {
       { immediate: true }
     );
 
-    // const id = ref();
-    // id.value = $route.params.id;
     getDetails();
     function addDetails() {
       learningPointsDialogVisibility.value = true;
     }
     async function getDetails() {
       await $store.dispatch("courses/getCourseById", $route.params.id);
-      await $store.dispatch("courses/getContentTitle", $route.params.id);
-      // details.course = await $store.getters["courses/Course"];
+      await $store.dispatch("courses/getContentTitle", {
+        id: $route.params.id,
+      });
+      await $store.dispatch("courses/getTopics");
     }
     function closeDialog() {
       learningPointsDialogVisibility.value = false;
@@ -149,14 +192,16 @@ export default {
       }
     }
 
-    function onSaveTitle() {
-      $store.dispatch("courses/addContentTitle", {
+    async function onSaveTitle(index: any) {
+      await $store.dispatch("courses/addContentTitle", {
         id: $route.params.id,
-        title: content,
+        title: data.value[index].value,
       });
+      $store.dispatch("courses/getContentTitle", { id: $route.params.id });
     }
 
-    function addContent() {
+    function addContent(id: any) {
+      titleId.value = id;
       contentDialogVisibility.value = true;
     }
     return {
@@ -169,8 +214,10 @@ export default {
       title,
       addSection,
       addContent,
-      content,
       contentDialogVisibility,
+      data,
+      titleId,
+      topics,
     };
   },
 };
