@@ -8,36 +8,50 @@
       class="d-flex justify-content-center align-items-center flex-column flex-grow-1"
     >
       <h3 class="text-center text-primary">We want to here you</h3>
-      <form class="border rounded p-3 mt-3">
+      <Form
+        class="border rounded p-3 mt-3"
+        @submit="onSubmit"
+        :validation-schema="schema"
+        v-slot="{ errors }"
+      >
         <div class="mb-3">
-          <input
+          <Field
             type="text"
             id="name"
+            name="name"
             class="form-control"
             placeholder="Name"
           />
+          <ErrorMessage name="name" :class="{ 'text-danger': errors.name }" />
         </div>
         <div class="mb-3">
-          <input
+          <Field
             type="text"
             id="email"
-            value="admin@1rivet.com"
+            name="email"
             class="form-control"
             placeholder="Email"
           />
+          <ErrorMessage name="email" :class="{ 'text-danger': errors.email }" />
         </div>
         <div class="mb-3">
-          <textarea
+          <Field
+            as="textarea"
             class="form-control"
             id="message"
+            name="message"
             rows="3"
-            placeholder="Your Query"
-          ></textarea>
+            placeholder="Your Query or Message"
+          />
+          <ErrorMessage
+            name="message"
+            :class="{ 'text-danger': errors.message }"
+          />
         </div>
         <button type="button" class="form-control bg-secondary text-white">
           Submit
         </button>
-      </form>
+      </Form>
     </div>
     <!-- end: contact form-->
     <!-- start: contact footer -->
@@ -68,7 +82,34 @@
     <!-- end: contact footer -->
   </section>
 </template>
-<script lang="ts"></script>
+<script lang="ts">
+import { Form, Field, ErrorMessage, useForm } from "vee-validate";
+import * as yup from "yup";
+import { useStore } from "vuex";
+export default {
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
+  setup() {
+    const $store = useStore();
+    const schema = yup.object({
+      name: yup.string().required(),
+      email: yup
+        .string()
+        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Enter correct mail id"),
+      message: yup.string().required(),
+    });
+
+    function onSubmit(data: any) {
+      console.log(data);
+      $store.dispatch("contact/addQuery", data);
+    }
+    return { schema, onSubmit };
+  },
+};
+</script>
 
 <style scoped lang="scss">
 .image-wrapper {
