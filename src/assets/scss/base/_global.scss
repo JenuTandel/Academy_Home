@@ -1,0 +1,59 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.route-enter-from {
+    opacity: 0.5;
+    // overflow-x: hidden;
+    // transform: scaleX(0.5);
+    // transform-origin: left;
+    // transform: translateX(-400px);
+}
+
+.route-enter-to,
+.route-leave-from {
+    opacity: 1;
+    // transform: scaleX(1);
+    // transform-origin: right;
+    // overflow-x: hidden;
+    // transform: translateX(0);
+}
+
+.route-leave-to {
+    opacity: 0.5;
+    // overflow-x: hidden;
+    // transform: scaleX(0.5);
+    // transform-origin: right;
+    // transform: translateX(400px);
+}
+
+// .route-leave-from {
+//    transform: scaleX(1);
+//    transform-origin: left;
+// }
+
+.route-enter-active {
+    transition: all 0.5s ease-out;
+}
+
+.route-leave-active {
+    transition: all 0.5s ease-in;
+}

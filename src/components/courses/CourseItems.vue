@@ -1,7 +1,7 @@
 <template>
   <div class="row gy-4">
     <div class="col-3" v-for="course in allCourses" :key="course.id">
-      <div class="card">
+      <div class="card" @click="onCard(course.id)">
         <dialog open class="border translate-middle-y">
           <h4 class="mb-2">{{ course.courseName }}</h4>
           <p class="mb-2 text-success">{{ course.courseDate }}</p>
@@ -27,10 +27,17 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
+import { useRouter } from "vue-router";
 export default {
   props: ["allCourses"],
   setup() {
+    const $router = useRouter();
+    function onCard(id: any) {
+      $router.push(`/courses/details/${id}`);
+    }
+    return { onCard };
     // const courses = ref();
     // courses.value = inject("allCourses");
     // return { courses };

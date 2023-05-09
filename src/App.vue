@@ -1,5 +1,6 @@
 <template>
   <section class="h-100 w-100 d-flex flex-column">
+    <base-spinner v-if="isLoading"></base-spinner>
     <header class="container-xl">
       <the-header></the-header>
     </header>
@@ -14,6 +15,7 @@
 </template>
 
 <script lang="ts">
+import { computed, watch, ref } from "vue";
 import TheHeader from "./components/core/TheHeader.vue";
 import { useStore } from "vuex";
 
@@ -23,56 +25,19 @@ export default {
   },
   setup() {
     const $store = useStore();
+    const isLoading = ref(false);
+    const isSpinner = computed(() => {
+      return $store.getters["courses/isLoading"];
+    });
+    watch(isSpinner, () => {
+      isLoading.value = isSpinner.value;
+    });
     $store.dispatch("tryLogin");
+    return { isLoading };
   },
 };
 </script>
 
 <style lang="scss">
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-body,
-html {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
-.route-enter-from {
-  opacity: 0;
-  overflow-x: hidden;
-  transform: scaleX(0);
-  transform-origin: left;
-  // transform: translateX(-400px);
-}
-.route-enter-to,
-.route-leave-from {
-  opacity: 1;
-  transform: scaleX(1);
-  transform-origin: right;
-  overflow-x: hidden;
-  // transform: translateX(0);
-}
-.route-leave-to {
-  opacity: 0;
-  overflow-x: hidden;
-  transform: scaleX(0);
-  transform-origin: right;
-  // transform: translateX(400px);
-}
-.route-leave-from {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-.route-enter-active {
-  transition: all 1s ease-out;
-}
-
-.route-leave-active {
-  transition: all 0.5s ease-in;
-}
 </style>

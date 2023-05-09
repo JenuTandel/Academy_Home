@@ -9,6 +9,7 @@ export default {
       course: {},
       contentTitles: [],
       topics: [],
+      isLoading: false,
     };
   },
   mutations,

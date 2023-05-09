@@ -1,21 +1,23 @@
 import axios from "axios";
 export default {
-  async addCourse(_: any, payload: any) {
+  async addCourse(context: any, payload: any) {
     const data = payload;
-
+    context.commit("isLoading", true);
     await axios
       .post(
         "https://academy-home-default-rtdb.firebaseio.com/courses.json",
         data
       )
       .then(() => {
-        return;
+        context.commit("isLoading", false);
       })
       .catch((err) => {
+        context.commit("isLoading", false);
         throw err;
       });
   },
   async getCourses(context: any) {
+    context.commit("isLoading", true);
     await axios
       .get("https://academy-home-default-rtdb.firebaseio.com/courses.json")
       .then((res) => {
@@ -35,7 +37,12 @@ export default {
           };
           courses.push(course);
         }
+        context.commit("isLoading", false);
         context.commit("getCoursesData", courses);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((err) => {
+        context.commit("isLoading", false);
       });
   },
   async deleteCourse(_: any, payload: any) {
@@ -49,23 +56,25 @@ export default {
       });
   },
   async getCourseById(context: any, payload: any) {
+    context.commit("isLoading", true);
     const id = payload;
     await axios
       .get(
         `https://academy-home-default-rtdb.firebaseio.com/courses/${id}.json`
       )
       .then((res) => {
-        // for (const key in res.data) {
-        //   console.log(res.data[key][0].contentTitle);
-        // }
-
         context.commit("courseData", {
           ...res.data,
           courseImage: res.data.courseImage._value,
         });
+        context.commit("isLoading", false);
+      })
+      .catch(() => {
+        context.commit("isLoading", false);
       });
   },
   async updateCourse(context: any, payload: any) {
+    context.commit("isLoading", true);
     const id = payload.id;
     await axios
       .patch(
@@ -81,6 +90,10 @@ export default {
       )
       .then((res) => {
         context.commit("courseData", res.data);
+        context.commit("isLoading", false);
+      })
+      .catch(() => {
+        context.commit("isLoading", false);
       });
   },
 
@@ -106,7 +119,6 @@ export default {
         { courseId: id, contentTitle: payload.title }
       )
       .then(() => {
-        //
         // context.dispatch("getContentTitle", id);
       });
   },
@@ -160,6 +172,9 @@ export default {
             id: key,
             contentId: res.data[key].contentId,
             topicname: res.data[key].topic?.topicname,
+            videoLink: res.data[key].topic?.videolink,
+            fileType: res.data[key].topic?.fileType,
+            // fileUrl: res.data[key].topic?.fileUrl,
           };
           topics.push(topic);
         }

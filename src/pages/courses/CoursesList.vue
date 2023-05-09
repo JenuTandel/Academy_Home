@@ -1,5 +1,5 @@
 <template>
-  <section class="p-3 h-100 overflow-hidden">
+  <section class="p-3 h-100 overflow-auto">
     <base-dialog
       :show="deleteDialogVisibility"
       title="Delete"

@@ -11,9 +11,29 @@
       />
     </div>
     <div class="mb-3">
-      <label>Add video lecture</label>
-      <input class="form-control" type="file" id="formFile" />
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Add video/textfile link"
+        v-model="videolink"
+      />
     </div>
+    <div class="mb-3">
+      <select name="fileType" class="form-select" v-model="fileType">
+        <option value="">Select the fileType</option>
+        <option value="videofile">Video file</option>
+        <option value="textfile">Text file</option>
+      </select>
+    </div>
+    <!-- <div class="mb-3">
+      <label>Add video lecture</label>
+      <input
+        class="form-control"
+        type="file"
+        id="formFile"
+        @change="handleFileUpload"
+      />
+    </div> -->
     <div class="mb-3">
       <button type="submit" class="btn btn-secondary">Add</button>
     </div>
@@ -21,15 +41,20 @@
 </template>
 
 <script lang="ts">
-import { ref, computed } from "vue";
+import { ref as reference, computed } from "vue";
 import { useStore } from "vuex";
+
+// import { storage } from "./../../firebase";
+// import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export default {
   props: ["id"],
   setup(props: any, context: any) {
     const $store = useStore();
-    const topicname = ref();
-    const videofile = ref();
-    const topic = ref();
+    const topicname = reference();
+    // const videofile = reference();
+    const videolink = reference();
+    const fileType = reference("");
+    const topic = reference();
     const id = computed(() => {
       return props.id;
     });
@@ -37,6 +62,9 @@ export default {
     async function onAdd() {
       topic.value = {
         topicname: topicname.value,
+        // fileUrl: videofile.value,
+        videolink: videolink.value,
+        fileType: fileType.value,
       };
       await $store.dispatch("courses/addTopic", {
         id: id.value,
@@ -46,7 +74,20 @@ export default {
       context.emit("topics", topics);
       context.emit("close", true);
     }
-    return { onAdd, topicname, videofile };
+
+    // function handleFileUpload(event: any) {
+    //   if (event) {
+    //     // uploadingImage.value = "uploading....";
+    //   }
+    //   const file = event.target.files[0];
+    //   const storageRef = ref(storage, file.name);
+    //   uploadBytes(storageRef, file).then(() => {
+    //     getDownloadURL(ref(storage, file.name)).then((url) => {
+    //       videofile.value = url;
+    //     });
+    //   });
+    // }
+    return { onAdd, topicname, videolink, fileType };
   },
 };
 </script>
