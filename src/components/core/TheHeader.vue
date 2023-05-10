@@ -11,7 +11,10 @@
         <router-link to="/about-us" class="nav-link">About Us</router-link>
       </li>
       <li class="nav-item">
-        <router-link to="/contact-us" class="nav-link">Contact Us</router-link>
+        <router-link to="/contact-us" class="nav-link"
+          ><span v-if="isAdmin">Contacts</span
+          ><span v-else>Contact Us</span></router-link
+        >
       </li>
       <li class="nav-item">
         <router-link to="/courses" class="nav-link">Courses</router-link>

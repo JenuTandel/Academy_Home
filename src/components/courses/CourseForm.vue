@@ -95,6 +95,7 @@ import { useStore } from "vuex";
 import { ref as refrence, reactive, onMounted } from "vue";
 import { storage } from "./../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import months from "../../services/months";
 
 export default {
   components: {
@@ -104,20 +105,6 @@ export default {
   },
   props: ["patchCourse", "isEdit", "updateId"],
   setup(props: any, context: any) {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "Decembers",
-    ];
     const formInit = reactive({ data: {} });
     const updateId = refrence(props.updateId);
     const isEditValue = refrence(props.isEdit);
@@ -157,14 +144,14 @@ export default {
           authorName: data.authorName,
           courseImage: { _value: imageUrl.value },
           courseDate: `${
-            monthNames[new Date().getMonth()]
+            months[new Date().getMonth()]
           } ${new Date().getFullYear()}`,
         });
       } else {
         await $store.dispatch("courses/addCourse", {
           ...data,
           courseDate: `${
-            monthNames[new Date().getMonth()]
+            months[new Date().getMonth()]
           } ${new Date().getFullYear()}`,
           courseImage: imageUrl,
         });

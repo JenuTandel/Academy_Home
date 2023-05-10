@@ -11,6 +11,8 @@ export default {
   },
   getUsers(state: any, payload: any) {
     state.users = payload;
-    console.log(state.users);
+  },
+  getToasterData(state: any, payload: any) {
+    state.toaster = payload;
   },
 };

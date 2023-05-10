@@ -20,6 +20,10 @@ html {
     cursor: pointer;
 }
 
+a {
+    text-decoration: none;
+}
+
 .route-enter-from {
     opacity: 0.5;
     // overflow-x: hidden;

@@ -9,6 +9,7 @@ export default {
       userId: "",
       isAdmin: false,
       users: [],
+      toaster: {},
     };
   },
   mutations,

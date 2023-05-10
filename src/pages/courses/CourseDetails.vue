@@ -1,5 +1,5 @@
 <template>
-  <section class="h-100 overflow-auto">
+  <section class="h-100">
     <!-- start: learningPoints dialog form -->
     <base-dialog
       :show="learningPointsDialogVisibility"
@@ -20,7 +20,11 @@
     <!-- end: content topics form -->
 
     <!-- start: topics video -->
-    <base-dialog :show="topicDialogVisibility" @close="closeDialog">
+    <base-dialog
+      :show="topicDialogVisibility"
+      @close="closeDialog"
+      v-if="userLoggedIn"
+    >
       <topic-preview
         @close="closeDialog"
         :topic="topic"
@@ -30,7 +34,7 @@
     <!-- end: topics video -->
 
     <!-- start: course all details -->
-    <div class="row bg-light p-5 align-items-center">
+    <div class="row bg-light p-5 align-items-center gx-0">
       <div class="col-7 text-white">
         <h2 class="mb-3">{{ details.course.courseName }}</h2>
         <p class="mb-3 fs-5">{{ details.course.courseDetails }}</p>
@@ -43,8 +47,9 @@
           type="button"
           class="btn btn-secondary text-white px-3 py-2"
           v-if="!isAdmin"
+          @click="onEnroll"
         >
-          Enroll Now
+          {{ enrollText }}
         </button>
       </div>
       <div class="col-5">
@@ -156,8 +161,11 @@
                 v-if="topic.contentId == data[index].id"
               >
                 <p
-                  class="cursor-pointer topicName"
-                  @click="onTopic(topic, data[index].contentTitle)"
+                  :class="{
+                    topicName: !isAdmin && (index == 1 || index == 0),
+                    'cursor-pointer': isAdmin,
+                  }"
+                  @click="onTopic(topic, index, data[index].contentTitle)"
                 >
                   <span
                     class="icon-ondemand_video me-2"
@@ -182,7 +190,7 @@
 
 <script lang="ts">
 import "../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { reactive, ref, computed, watch } from "vue";
 import LearningPointsForm from "@/components/courses/LearningPointsForm.vue";
@@ -193,6 +201,7 @@ export default {
   components: { LearningPointsForm, CourseTopic, TopicPreview },
   setup() {
     const $route = useRoute();
+    const $router = useRouter();
     const $store = useStore();
     const details = reactive({} as any);
     const title = ref();
@@ -202,6 +211,10 @@ export default {
     const titleId = ref();
     const topic = ref();
     const topicContentTitle = ref();
+    const enrollText = ref("Enroll Now");
+    const userLoggedIn = computed(() => {
+      return localStorage.getItem("userId");
+    });
     const isAdmin = computed(() => {
       return localStorage.getItem("role");
     });
@@ -285,12 +298,27 @@ export default {
       contentDialogVisibility.value = true;
     }
 
-    function onTopic(topicData: any, contentTitle: any) {
-      // console.log(topicData);
-      topic.value = topicData;
-      topicContentTitle.value = contentTitle;
-      topicDialogVisibility.value = true;
+    function onTopic(topicData: any, index: any, contentTitle: any) {
+      if (!isAdmin.value) {
+        if (!userLoggedIn.value) {
+          $router.replace("/login");
+        } else {
+          if (index == 0 || index == 1) {
+            topic.value = topicData;
+            topicContentTitle.value = contentTitle;
+            topicDialogVisibility.value = true;
+          }
+        }
+      } else {
+        topic.value = topicData;
+        topicContentTitle.value = contentTitle;
+        topicDialogVisibility.value = true;
+      }
     }
+    function onEnroll() {
+      enrollText.value = "Go to the Course";
+    }
+
     return {
       details,
       addDetails,
@@ -310,6 +338,9 @@ export default {
       topicDialogVisibility,
       topic,
       topicContentTitle,
+      userLoggedIn,
+      onEnroll,
+      enrollText,
     };
   },
 };
@@ -323,7 +354,8 @@ export default {
     width: 100%;
   }
 }
-.topicName:hover {
+.topicName {
   color: purple;
+  cursor: pointer;
 }
 </style>

@@ -4,14 +4,9 @@
       <span class="icon icon-close" @click="onClose"></span>
     </div>
     <h3 class="my-3">{{ contentTitle }}</h3>
-    <h4 class="mb-3">{{ topic.topicname }}</h4>
+    <p class="mb-3 fw-semibold">{{ topic.topicname }}</p>
     <div class="d-flex flex-column align-items-center" v-if="topic.videoLink">
       <iframe class="w-100" height="300px" :src="topic.videoLink"></iframe>
-      <!-- <iframe
-        class="w-100"
-        height="300px"
-        src="https://1rivet.udemy.com/"
-      ></iframe> -->
     </div>
     <p v-else>No File Found</p>
   </div>

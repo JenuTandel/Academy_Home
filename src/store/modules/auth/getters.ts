@@ -8,4 +8,7 @@ export default {
   getUsers(state: any) {
     return state.users;
   },
+  getToaster(state: any) {
+    return state.toaster;
+  },
 };

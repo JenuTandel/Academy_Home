@@ -5,7 +5,9 @@ import coursesModule from "./modules/courses";
 import contactModule from "./modules/contact";
 
 export default createStore({
-  state: {},
+  state: {
+    toaster: {},
+  },
   getters: {},
   mutations: {},
   actions: {},

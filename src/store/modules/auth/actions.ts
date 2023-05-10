@@ -15,15 +15,20 @@ export default {
         throw err;
       });
   },
-  async signup(_: any, payload: any) {
+  async signup(context: any, payload: any) {
     const data = payload;
     await axios
       .post(
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBDWp5tagLwUNX3kUOpPO2cCZh0VV00s",
         { ...data, returnSecureToken: true }
       )
-      .then(() => {
-        return;
+      .then((res) => {
+        console.log(res);
+
+        context.commit("getToasterData", {
+          message: "Registered Successfully",
+          type: "success",
+        });
       })
       .catch((err) => {
         throw err;
@@ -46,6 +51,10 @@ export default {
           context.commit("isAdmin", true);
         }
         context.commit("isLogin", true);
+        context.commit("getToasterData", {
+          message: "successfully logged in",
+          type: "success",
+        });
       })
       .catch((err) => {
         context.commit("isLogin", false);
@@ -77,6 +86,7 @@ export default {
     context.commit("isAdmin", false);
   },
   async getUsers(context: any) {
+    context.rootState.courses.isLoading = true;
     await axios
       .get("https://academy-home-default-rtdb.firebaseio.com/registration.json")
       .then((res) => {
@@ -94,6 +104,7 @@ export default {
           users.push(user);
         }
         context.commit("getUsers", users);
+        context.rootState.courses.isLoading = false;
       });
   },
 

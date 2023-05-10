@@ -10,6 +10,7 @@ export default {
       )
       .then(() => {
         context.commit("isLoading", false);
+        context.rootState.authModule.toaster = { message: "" };
       })
       .catch((err) => {
         context.commit("isLoading", false);
@@ -159,9 +160,6 @@ export default {
   },
 
   async getTopics(context: any, payload: any) {
-    const id = payload;
-    console.log(id);
-
     await axios
       .get(`https://academy-home-default-rtdb.firebaseio.com/Topics.json`)
       .then((res) => {
