@@ -11,4 +11,10 @@ export default {
   getToaster(state: any) {
     return state.toaster;
   },
+  getUserId(state: any) {
+    return state.userId;
+  },
+  getEnrollText(state: any) {
+    return state.enrollText;
+  },
 };

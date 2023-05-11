@@ -181,4 +181,6 @@ export default {
         context.commit("getContentTopics", topics);
       });
   },
+
+  
 };

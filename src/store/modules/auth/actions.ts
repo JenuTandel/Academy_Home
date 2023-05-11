@@ -1,11 +1,12 @@
 import axios from "axios";
 
 export default {
-  async registration(_: any, payload: any) {
+  async registration(context: any, payload: any) {
     const data = payload;
+    const userId = context.getters.getUserId;
     await axios
-      .post(
-        "https://academy-home-default-rtdb.firebaseio.com/registration.json",
+      .put(
+        `https://academy-home-default-rtdb.firebaseio.com/registration/${userId}.json`,
         data
       )
       .then(() => {
@@ -23,8 +24,7 @@ export default {
         { ...data, returnSecureToken: true }
       )
       .then((res) => {
-        console.log(res);
-
+        context.commit("userId", res.data.localId);
         context.commit("getToasterData", {
           message: "Registered Successfully",
           type: "success",
@@ -116,5 +116,37 @@ export default {
     await axios.delete(
       "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBDWp5tagLwUNX3kUOpPO2cCZh0VV00s"
     );
+  },
+
+  async updateUser(context: any, payload: any) {
+    const userId = localStorage.getItem("userId");
+    await axios
+      .post(
+        `https://academy-home-default-rtdb.firebaseio.com/registration/${userId}/enrolledCourses.json`,
+        { enrollText: payload.enrolled, courseId: payload.id }
+      )
+      .then((res) => {
+        //
+      });
+    context.dispatch("getUserById", payload.id);
+  },
+
+  async getUserById(context: any, payload: any) {
+    const userId = localStorage.getItem("userId");
+    const courseId = payload;
+    let enrollText = "Enroll Now";
+
+    await axios
+      .get(
+        `https://academy-home-default-rtdb.firebaseio.com/registration/${userId}/enrolledCourses.json`
+      )
+      .then((res) => {
+        for (const key in res.data) {
+          if (res.data[key].courseId == courseId) {
+            enrollText = res.data[key].enrollText;
+          }
+        }
+        context.commit("enrollButtonData", enrollText);
+      });
   },
 };

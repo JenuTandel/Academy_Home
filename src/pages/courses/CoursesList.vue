@@ -118,7 +118,6 @@ export default {
     });
     watch(allCourses, () => {
       courses.value = allCourses.value;
-      console.log(courses);
     });
 
     watch(searchInput, () => {

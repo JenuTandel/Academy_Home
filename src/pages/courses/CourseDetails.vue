@@ -47,9 +47,9 @@
           type="button"
           class="btn btn-secondary text-white px-3 py-2"
           v-if="!isAdmin"
-          @click="onEnroll"
+          @click="onEnroll()"
         >
-          {{ enrollText }}
+          {{ enrollButtonText }}
         </button>
       </div>
       <div class="col-5">
@@ -196,6 +196,7 @@ import { reactive, ref, computed, watch } from "vue";
 import LearningPointsForm from "@/components/courses/LearningPointsForm.vue";
 import CourseTopic from "@/components/courses/CourseTopic.vue";
 import TopicPreview from "@/components/courses/TopicPreview.vue";
+import router from "@/router";
 
 export default {
   components: { LearningPointsForm, CourseTopic, TopicPreview },
@@ -203,6 +204,8 @@ export default {
     const $route = useRoute();
     const $router = useRouter();
     const $store = useStore();
+    const id = $route.params.id;
+
     const details = reactive({} as any);
     const title = ref();
     const learningPointsDialogVisibility = ref(false);
@@ -211,23 +214,30 @@ export default {
     const titleId = ref();
     const topic = ref();
     const topicContentTitle = ref();
-    const enrollText = ref("Enroll Now");
+    const data = ref();
+    data.value = [{ value: "" }];
+    const topics = ref();
+
     const userLoggedIn = computed(() => {
       return localStorage.getItem("userId");
     });
     const isAdmin = computed(() => {
       return localStorage.getItem("role");
     });
+    const enrollButtonText = computed(() => {
+      return $store.getters["getEnrollText"];
+    });
+
     const computedDetails = computed(() => {
       return $store.getters["courses/Course"];
     });
-    // const contentTitle = computed(()=>{
-    //   return $store.getters["course/Course"]
-    // })
-    // const content = reactive([{ value: "" }]);
-    const data = ref();
-    data.value = [{ value: "" }];
-    const topics = ref();
+    watch(
+      computedDetails,
+      () => {
+        details.course = computedDetails.value;
+      },
+      { immediate: true }
+    );
 
     const contentTitles = computed(() => {
       return $store.getters["courses/ContentTitles"];
@@ -239,10 +249,10 @@ export default {
       },
       { immediate: true }
     );
+
     const topicData = computed(() => {
       return $store.getters["courses/Topics"];
     });
-
     watch(
       topicData,
       () => {
@@ -250,24 +260,17 @@ export default {
       },
       { immediate: true }
     );
-    console.log(topics.value);
 
     function addSection() {
       data.value.push({ value: "" });
     }
-    watch(
-      computedDetails,
-      () => {
-        details.course = computedDetails.value;
-      },
-      { immediate: true }
-    );
 
     getDetails();
     function addDetails() {
       learningPointsDialogVisibility.value = true;
     }
     async function getDetails() {
+      await $store.dispatch("getUserById", $route.params.id);
       await $store.dispatch("courses/getCourseById", $route.params.id);
       await $store.dispatch("courses/getContentTitle", {
         id: $route.params.id,
@@ -315,8 +318,15 @@ export default {
         topicDialogVisibility.value = true;
       }
     }
+
     function onEnroll() {
-      enrollText.value = "Go to the Course";
+      if (!userLoggedIn.value) {
+        $router.replace("/login");
+      } else if (enrollButtonText.value == "Enroll Now") {
+        $store.dispatch("updateUser", { id: id, enrolled: "Go to the Course" });
+      } else {
+        $router.push(`/courses/${id}/${details.course.courseName}`);
+      }
     }
 
     return {
@@ -340,7 +350,7 @@ export default {
       topicContentTitle,
       userLoggedIn,
       onEnroll,
-      enrollText,
+      enrollButtonText,
     };
   },
 };

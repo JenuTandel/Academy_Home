@@ -9,9 +9,9 @@
             {{ course.timeDuration }} total hrs
           </p>
           <p class="mb-2">{{ course.courseDetails }}</p>
-          <button type="button" class="btn btn-secondary text-white">
+          <!-- <button type="button" class="btn btn-secondary text-white">
             Enroll Now
-          </button>
+          </button> -->
           <div class="arrow-left"></div>
         </dialog>
         <img

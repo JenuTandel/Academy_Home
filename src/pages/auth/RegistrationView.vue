@@ -234,21 +234,21 @@ export default {
       // console.log(a.name);
 
       try {
-        await $store.dispatch("registration", {
-          firstname: data.firstname,
-          lastname: data.lastname,
+        await $store.dispatch("signup", {
           email: data.email,
           password: data.password,
-          countryId: data.country,
-          stateId: data.state,
-          cityId: data.city,
-          phoneno: data.phoneno,
-          skills: data.skills,
-          joiningDate: `${new Date().getDate()}/ ${new Date().getMonth()}/ ${new Date().getFullYear()}`,
         }),
-          await $store.dispatch("signup", {
+          await $store.dispatch("registration", {
+            firstname: data.firstname,
+            lastname: data.lastname,
             email: data.email,
             password: data.password,
+            countryId: data.country,
+            stateId: data.state,
+            cityId: data.city,
+            phoneno: data.phoneno,
+            skills: data.skills,
+            joiningDate: `${new Date().getDate()}/ ${new Date().getMonth()}/ ${new Date().getFullYear()}`,
           });
       } catch (err: any) {
         error.value = err.response.data.error.message;

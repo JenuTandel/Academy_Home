@@ -10,6 +10,7 @@ export default {
       isAdmin: false,
       users: [],
       toaster: {},
+      enrollText: "",
     };
   },
   mutations,

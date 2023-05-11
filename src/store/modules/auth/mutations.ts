@@ -15,4 +15,10 @@ export default {
   getToasterData(state: any, payload: any) {
     state.toaster = payload;
   },
+  userId(state: any, payload: any) {
+    state.userId = payload;
+  },
+  enrollButtonData(state: any, payload: any) {
+    state.enrollText = payload;
+  },
 };
