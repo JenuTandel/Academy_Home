@@ -78,7 +78,7 @@
                 <button
                   type="button"
                   class="btn btn-info"
-                  @click="onDetails(course.id)"
+                  @click="onDetails(course)"
                 >
                   Details
                 </button>
@@ -172,8 +172,8 @@ export default {
       isEdit.value = true;
     }
 
-    function onDetails(id: any) {
-      $router.push(`/courses/details/${id}`);
+    function onDetails(course: any) {
+      $router.push(`/courses/details/${course.id}`);
     }
     function closeDialog() {
       dialogVisibility.value = false;

@@ -125,7 +125,7 @@ export default {
         `https://academy-home-default-rtdb.firebaseio.com/registration/${userId}/enrolledCourses.json`,
         { enrollText: payload.enrolled, courseId: payload.id }
       )
-      .then((res) => {
+      .then(() => {
         //
       });
     context.dispatch("getUserById", payload.id);

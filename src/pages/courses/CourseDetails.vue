@@ -29,6 +29,8 @@
         @close="closeDialog"
         :topic="topic"
         :contentTitle="topicContentTitle"
+        :closeButton="true"
+        :iframeHeight="300"
       ></topic-preview>
     </base-dialog>
     <!-- end: topics video -->
@@ -196,7 +198,6 @@ import { reactive, ref, computed, watch } from "vue";
 import LearningPointsForm from "@/components/courses/LearningPointsForm.vue";
 import CourseTopic from "@/components/courses/CourseTopic.vue";
 import TopicPreview from "@/components/courses/TopicPreview.vue";
-import router from "@/router";
 
 export default {
   components: { LearningPointsForm, CourseTopic, TopicPreview },

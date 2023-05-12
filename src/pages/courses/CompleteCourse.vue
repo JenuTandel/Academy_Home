@@ -1,110 +1,139 @@
 <template>
-  <section class="h-100 w-100">
-    <!-- <p>Hellooooo</p> -->
-    <topic-preview
-      :topic="topic"
-      :contentTitle="topicContentTitle"
-    ></topic-preview>
-    <sidebar>
-      <button
-        type="button"
-        class="btn-sidebar bg-dark px-3 py-2"
-        v-if="isOpenButton"
-        @click="isSidebarButton"
-      >
-        <span class="content-title text-white me-2">Course-content</span>
-        <span class="icon-arrow-right text-white"></span>
-      </button>
-      <div class="sidebar py-3" v-if="isSidebar">
-        <div
-          class="d-flex justify-content-between align-items-center mx-3 mb-3"
-        >
-          <h4>Course Content</h4>
-          <span class="icon-close" @click="onSidebarClose"></span>
-        </div>
-        <!-- start: accordian -->
-        <div
-          class="accordion mb-2"
-          id="accordionExample"
-          v-for="(field, index) in data"
-          :key="index"
-        >
-          <div class="accordion-item">
-            <h2 class="accordion-header">
+  <section class="h-100 w-100 position-relative">
+    <button
+      type="button"
+      class="btn-sidebar bg-dark px-3 py-2"
+      v-if="isOpenButton"
+      @click="isSidebarButton"
+    >
+      <span class="content-title text-white me-2">Course-content</span>
+      <span class="icon-arrow-right text-white"></span>
+    </button>
+    <div class="row gx-0 h-100 justify-content-center">
+      <!-- <p>Hellooooo</p> -->
+      <div class="col-4" v-if="isSidebar">
+        <aside class="sidebar h-100 border-end py-3 pe-2">
+          <div
+            class="d-flex justify-content-between align-items-center mx-3 mb-3"
+          >
+            <h4>Course Content</h4>
+            <span class="icon-close" @click="onSidebarClose"></span>
+          </div>
+          <!-- start: accordian -->
+          <div
+            class="accordion mb-2"
+            id="accordionExample"
+            v-for="(field, index) in data"
+            :key="index"
+          >
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <div
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  :data-bs-target="`#collapse-${index}`"
+                  aria-expanded="true"
+                  aria-controls="collapseOne"
+                >
+                  <div
+                    class="d-flex justify-content-between align-items-center w-100"
+                  >
+                    <form
+                      class="d-flex"
+                      @submit.prevent="onSaveTitle(index)"
+                      v-if="!data[index].contentTitle"
+                    >
+                      <input
+                        type="text"
+                        :id="'field-' + index"
+                        :name="'field-' + index"
+                        v-model="field.value"
+                        placeholder="title"
+                        class="form-control"
+                      />
+                      <button type="submit" class="btn btn-primary ms-2">
+                        Save
+                      </button>
+                    </form>
+                    <p>
+                      Section {{ index + 1 }}: {{ data[index].contentTitle }}
+                    </p>
+                  </div>
+                </div>
+              </h2>
               <div
-                class="accordion-button"
-                type="button"
-                data-bs-toggle="collapse"
-                :data-bs-target="`#collapse-${index}`"
-                aria-expanded="true"
-                aria-controls="collapseOne"
+                :id="`collapse-${index}`"
+                class="accordion-collapse collapse"
+                data-bs-parent="#accordionExample"
               >
-                <div
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
-                  <form
-                    class="d-flex"
-                    @submit.prevent="onSaveTitle(index)"
-                    v-if="!data[index].contentTitle"
+                <template v-for="topic in topics" :key="topic.id">
+                  <div
+                    class="accordion-body"
+                    v-if="topic.contentId == data[index].id"
                   >
-                    <input
-                      type="text"
-                      :id="'field-' + index"
-                      :name="'field-' + index"
-                      v-model="field.value"
-                      placeholder="title"
-                      class="form-control"
-                    />
-                    <button type="submit" class="btn btn-primary ms-2">
-                      Save
-                    </button>
-                  </form>
-                  <p>
-                    {{ data[index].contentTitle }}
-                  </p>
-                </div>
+                    <p
+                      class="cursor-pointer"
+                      @click="onTopic(topic, data[index].contentTitle)"
+                    >
+                      <span
+                        class="icon-ondemand_video me-2"
+                        v-if="topic.fileType == 'videofile'"
+                      ></span>
+                      <span
+                        class="icon-file-text me-2"
+                        v-if="topic.fileType == 'textfile'"
+                      ></span>
+                      {{ topic.topicname }}
+                    </p>
+                  </div>
+                </template>
               </div>
-            </h2>
+            </div>
+          </div>
+          <!-- end: accordian -->
+        </aside>
+      </div>
+      <div class="col-8 p-2">
+        <topic-preview
+          :topic="topic"
+          :contentTitle="topicContentTitle"
+          :iframeHeight="500"
+        ></topic-preview>
+
+        <div class="m-2">
+          <h4 class="mb-3">{{ details.course.courseDetails }}</h4>
+          <p class="mb-3">Created By : {{ details.course.authorName }}</p>
+          <p class="mb-3">
+            Last updated on
+            <span class="fw-semibold">{{ details.course.courseDate }}</span>
+          </p>
+          <p class="mb-3">
+            Course Time Duration: {{ details.course.timeDuration }} Hrs
+          </p>
+          <div class="border rounded-2 p-3">
+            <h4 class="mb-3">What you'll learn</h4>
             <div
-              :id="`collapse-${index}`"
-              class="accordion-collapse collapse"
-              data-bs-parent="#accordionExample"
+              v-for="(i, index) in details.course.learningPoints"
+              :key="index"
             >
-              <template v-for="topic in topics" :key="topic.id">
-                <div
-                  class="accordion-body"
-                  v-if="topic.contentId == data[index].id"
-                >
-                  <p
-                    class="cursor-pointer"
-                    @click="onTopic(topic, data[index].contentTitle)"
-                  >
-                    <span
-                      class="icon-ondemand_video me-2"
-                      v-if="topic.fileType == 'videofile'"
-                    ></span>
-                    <span
-                      class="icon-file-text me-2"
-                      v-if="topic.fileType == 'textfile'"
-                    ></span>
-                    {{ topic.topicname }}
-                  </p>
-                </div>
-              </template>
+              <p class="mb-2">
+                <span class="icon icon-done me-3"></span>
+                {{ i.value }}
+              </p>
             </div>
           </div>
         </div>
-        <!-- end: accordian -->
       </div>
-    </sidebar>
+    </div>
   </section>
 </template>
 
 <script lang="ts">
 import "../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useStore } from "vuex";
-import { reactive, ref, computed, watch } from "vue";
+import { reactive, ref, computed, watch, onMounted } from "vue";
 import TopicPreview from "@/components/courses/TopicPreview.vue";
 
 export default {
@@ -117,11 +146,11 @@ export default {
     const details = reactive({} as any);
     const title = ref();
     const titleId = ref();
-    const topic = ref();
     const topicContentTitle = ref();
     const data = ref();
     data.value = [{ value: "" }];
     const topics = ref();
+    const topic = ref();
     const isSidebar = ref(true);
     const isOpenButton = ref(false);
 
@@ -139,10 +168,33 @@ export default {
     const topicData = computed(() => {
       return $store.getters["courses/Topics"];
     });
-    watch(
-      topicData,
-      () => {
+    // watch(
+    //   topicData,
+    //   () => {
+    //     topics.value = topicData.value;
+    //   },
+    //   { immediate: true }
+    // );
+    onMounted(() => {
+      watch(topicData, () => {
         topics.value = topicData.value;
+        for (let i in topics.value) {
+          if (data.value[0]?.id == topics.value[i].contentId) {
+            topic.value = topics.value[i];
+            break;
+          }
+        }
+        console.log(data.value);
+      });
+    });
+
+    const computedDetails = computed(() => {
+      return $store.getters["courses/Course"];
+    });
+    watch(
+      computedDetails,
+      () => {
+        details.course = computedDetails.value;
       },
       { immediate: true }
     );
@@ -212,14 +264,13 @@ export default {
 
 <style scoped lang="scss">
 .sidebar {
-  width: 35%;
   z-index: 10;
 }
 .btn-sidebar {
   z-index: 200;
   position: absolute;
-  top: 10%;
-  left: -5px;
+  top: 50px;
+  left: 0;
 
   &:hover {
     .content-title {

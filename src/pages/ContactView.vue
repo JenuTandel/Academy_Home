@@ -127,7 +127,7 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { useStore } from "vuex";
-import { ref, computed, watch } from "vue";
+import { computed } from "vue";
 import months from "../services/months";
 export default {
   components: {

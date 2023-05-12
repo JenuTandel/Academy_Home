@@ -159,7 +159,7 @@ export default {
       });
   },
 
-  async getTopics(context: any, payload: any) {
+  async getTopics(context: any) {
     await axios
       .get(`https://academy-home-default-rtdb.firebaseio.com/Topics.json`)
       .then((res) => {
@@ -181,6 +181,4 @@ export default {
         context.commit("getContentTopics", topics);
       });
   },
-
-  
 };

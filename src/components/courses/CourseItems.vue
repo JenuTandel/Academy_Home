@@ -1,7 +1,7 @@
 <template>
   <div class="row gy-4">
     <div class="col-3" v-for="course in allCourses" :key="course.id">
-      <div class="card" @click="onCard(course.id)">
+      <div class="card" @click="onCard(course.id, course.courseName)">
         <dialog open class="border translate-middle-y">
           <h4 class="mb-2">{{ course.courseName }}</h4>
           <p class="mb-2 text-success">{{ course.courseDate }}</p>
@@ -30,12 +30,23 @@
 
 <script lang="ts">
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 export default {
   props: ["allCourses"],
   setup() {
+    const $store = useStore();
     const $router = useRouter();
-    function onCard(id: any) {
-      $router.push(`/courses/details/${id}`);
+
+    async function onCard(id: any, title: any) {
+      await $store.dispatch("getUserById", id);
+      const d = await $store.getters["getEnrollText"];
+      console.log(d);
+
+      if (d == "Go to the Course") {
+        $router.push(`/courses/${id}/${title}`);
+      } else {
+        $router.push(`/courses/details/${id}`);
+      }
     }
     return { onCard };
     // const courses = ref();
