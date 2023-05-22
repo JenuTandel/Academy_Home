@@ -35,7 +35,7 @@
       />
     </div> -->
     <div class="mb-3">
-      <button type="submit" class="btn btn-secondary">Add</button>
+      <button type="submit" class="btn btn-secondary">{{ buttonName }}</button>
     </div>
   </form>
 </template>
@@ -47,17 +47,29 @@ import { useStore } from "vuex";
 // import { storage } from "./../../firebase";
 // import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export default {
-  props: ["id"],
+  props: ["id", "Editabletopic", "buttonName"],
   setup(props: any, context: any) {
+    console.log(props.Editabletopic);
+
     const $store = useStore();
     const topicname = reference();
     // const videofile = reference();
     const videolink = reference();
     const fileType = reference("");
     const topic = reference();
+    const editData = computed(() => {
+      return props.Editabletopic;
+    });
     const id = computed(() => {
       return props.id;
     });
+    const buttonname = computed(() => {
+      return props.buttonName;
+    });
+
+    if (buttonname.value == "Edit") {
+      topicname.value = editData.value.topicname;
+    }
 
     async function onAdd() {
       topic.value = {
@@ -87,7 +99,7 @@ export default {
     //     });
     //   });
     // }
-    return { onAdd, topicname, videolink, fileType };
+    return { onAdd, topicname, videolink, fileType, buttonname };
   },
 };
 </script>

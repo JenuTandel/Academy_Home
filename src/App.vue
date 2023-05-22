@@ -34,6 +34,8 @@ export default {
     ToasterMessage,
   },
   setup() {
+    console.log(process.env.VUE_APP_TITLE);
+
     const $store = useStore();
     const isLoading = ref(false);
     const toasterData = ref();

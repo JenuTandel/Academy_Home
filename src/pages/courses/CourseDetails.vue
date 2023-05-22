@@ -15,7 +15,13 @@
 
     <!-- start: content topics form -->
     <base-dialog :show="contentDialogVisibility" @close="closeDialog">
-      <course-topic @close="closeDialog" :id="titleId"> </course-topic>
+      <course-topic
+        @close="closeDialog"
+        :id="titleId"
+        :Editabletopic="Editabletopic"
+        :btnName="buttonName"
+      >
+      </course-topic>
     </base-dialog>
     <!-- end: content topics form -->
 
@@ -34,6 +40,44 @@
       ></topic-preview>
     </base-dialog>
     <!-- end: topics video -->
+
+    <!-- start: delete section dialog -->
+    <base-dialog
+      :show="deleteDialogVisibility"
+      title="Delete"
+      @close="closeDialog"
+    >
+      <template #header> </template>
+      <template #default>
+        <p>Are you sure to delete this section?</p>
+      </template>
+      <template #action>
+        <button class="btn btn-success me-3" @click="onDeleteConfirm">
+          Ok
+        </button>
+        <button class="btn btn-dark" @click="closeDialog">Cancel</button>
+      </template>
+    </base-dialog>
+    <!-- end: delete section dialog -->
+
+    <!-- start: delete topic dialog -->
+    <base-dialog
+      :show="deleteTopicDialogVisibility"
+      title="Delete"
+      @close="closeDialog"
+    >
+      <template #header> </template>
+      <template #default>
+        <p>Are you sure to delete this section?</p>
+      </template>
+      <template #action>
+        <button class="btn btn-success me-3" @click="onDeleteTopicConfirm">
+          Ok
+        </button>
+        <button class="btn btn-dark" @click="closeDialog">Cancel</button>
+      </template>
+    </base-dialog>
+    <!-- end: delete topic dialog -->
 
     <!-- start: course all details -->
     <div class="row bg-light p-5 align-items-center gx-0">
@@ -124,7 +168,7 @@
                 <form
                   class="d-flex"
                   @submit.prevent="onSaveTitle(index)"
-                  v-if="!data[index].contentTitle"
+                  v-if="!data[index].contentTitle || isEditable"
                 >
                   <input
                     type="text"
@@ -137,18 +181,34 @@
                   <button type="submit" class="btn btn-primary ms-2">
                     Save
                   </button>
+                  <!-- v-if="data[index].contentTitle" -->
                 </form>
-                <p>
-                  {{ data[index].contentTitle }}
-                </p>
-                <button
-                  type="button"
-                  class="btn btn-primary me-3"
-                  @click="addContent(data[index].id)"
-                  v-if="isAdmin"
-                >
-                  Add content
-                </button>
+                <div class="d-flex">
+                  <p>
+                    {{ data[index].contentTitle }}
+                  </p>
+                  <span
+                    class="icon-edit ms-3"
+                    v-if="isAdmin"
+                    @click="onEditTitle(data[index].contentTitle)"
+                  ></span>
+                </div>
+                <div v-if="isAdmin">
+                  <button
+                    type="button"
+                    class="btn btn-primary me-3"
+                    @click="addContent(data[index].id)"
+                  >
+                    Add content
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger me-3"
+                    @click="onDeleteSection(data[index].id)"
+                  >
+                    Delete section
+                  </button>
+                </div>
               </div>
             </div>
           </h2>
@@ -163,6 +223,7 @@
                 v-if="topic.contentId == data[index].id"
               >
                 <p
+                  class="d-inline"
                   :class="{
                     topicName: !isAdmin && (index == 1 || index == 0),
                     'cursor-pointer': isAdmin,
@@ -179,6 +240,16 @@
                   ></span>
                   {{ topic.topicname }}
                 </p>
+                <span
+                  class="icon icon-edit ms-3"
+                  v-if="isAdmin"
+                  @click="onEditTopic(topic)"
+                ></span>
+                <span
+                  class="icon icon-delete text-danger ms-2"
+                  v-if="isAdmin"
+                  @click="onDeleteTopic(topic.id)"
+                ></span>
               </div>
             </template>
           </div>
@@ -212,12 +283,19 @@ export default {
     const learningPointsDialogVisibility = ref(false);
     const contentDialogVisibility = ref(false);
     const topicDialogVisibility = ref(false);
+    const deleteDialogVisibility = ref(false);
+    const deleteTopicDialogVisibility = ref(false);
     const titleId = ref();
     const topic = ref();
     const topicContentTitle = ref();
     const data = ref();
     data.value = [{ value: "" }];
     const topics = ref();
+    const isEditable = ref(false);
+    const deleteSectionId = ref();
+    const deleteTopicId = ref();
+    const Editabletopic = ref();
+    const buttonName = ref();
 
     const userLoggedIn = computed(() => {
       return localStorage.getItem("userId");
@@ -282,6 +360,7 @@ export default {
       learningPointsDialogVisibility.value = false;
       contentDialogVisibility.value = false;
       topicDialogVisibility.value = false;
+      deleteDialogVisibility.value = false;
     }
     async function getCall(get: any) {
       if (get) {
@@ -300,6 +379,7 @@ export default {
     function addContent(id: any) {
       titleId.value = id;
       contentDialogVisibility.value = true;
+      buttonName.value = "Add";
     }
 
     function onTopic(topicData: any, index: any, contentTitle: any) {
@@ -330,6 +410,40 @@ export default {
       }
     }
 
+    function onDeleteSection(id: any) {
+      deleteDialogVisibility.value = true;
+      deleteSectionId.value = id;
+    }
+    function onDeleteConfirm() {
+      $store.dispatch("courses/deleteContentTitle", {
+        deleteId: deleteSectionId.value,
+        courseId: id,
+      });
+      deleteDialogVisibility.value = false;
+    }
+    function onEditTitle(title: any) {
+      isEditable.value = true;
+    }
+
+    function onDeleteTopic(id: any) {
+      deleteTopicDialogVisibility.value = true;
+      deleteTopicId.value = id;
+    }
+
+    function onDeleteTopicConfirm() {
+      $store.dispatch("courses/deleteTopic", {
+        id: deleteTopicId.value,
+        courseId: id,
+      });
+      deleteTopicDialogVisibility.value = false;
+    }
+
+    function onEditTopic(topicData: any) {
+      Editabletopic.value = topicData;
+      contentDialogVisibility.value = true;
+      buttonName.value = "Edit";
+    }
+
     return {
       details,
       addDetails,
@@ -352,6 +466,17 @@ export default {
       userLoggedIn,
       onEnroll,
       enrollButtonText,
+      deleteDialogVisibility,
+      deleteTopicDialogVisibility,
+      onDeleteSection,
+      onDeleteConfirm,
+      onEditTitle,
+      isEditable,
+      onDeleteTopic,
+      onDeleteTopicConfirm,
+      onEditTopic,
+      Editabletopic,
+      buttonName,
     };
   },
 };
