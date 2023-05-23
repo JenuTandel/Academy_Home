@@ -137,12 +137,18 @@ export default {
     });
   },
 
-  // async deleteTopics(context: any, payload: any) {
-  // await axios.delete(`${baseUrl}Topics.json`).then((res) => {
-  //   //
-  // });
-  // },
-
+  async editContentTitle(context: any, payload: any) {
+    const id = payload.id;
+    const contentId = payload.contentId;
+    await axios
+      .put(`${baseUrl}courseDetails/${contentId}.json`, {
+        courseId: id,
+        contentTitle: payload.title,
+      })
+      .then(() => {
+        // context.dispatch("getContentTitle", id);
+      });
+  },
   async addTopic(context: any, payload: any) {
     const id = payload.id;
     await axios
@@ -181,5 +187,19 @@ export default {
     await axios.delete(`${baseUrl}Topics/${id}.json`).then((res) => {
       context.dispatch("getTopics");
     });
+  },
+
+  async editTopic(context: any, payload: any) {
+    const id = payload.id;
+    const topicId = payload.topicId;
+    console.log("Edit");
+    await axios
+      .put(`${baseUrl}Topics/${topicId}.json`, {
+        contentId: id,
+        topic: payload.topic,
+      })
+      .then((res) => {
+        // console.log(res);
+      });
   },
 };

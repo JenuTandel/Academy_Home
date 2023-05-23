@@ -35,40 +35,40 @@
       />
     </div> -->
     <div class="mb-3">
-      <button type="submit" class="btn btn-secondary">{{ buttonName }}</button>
+      <button type="submit" class="btn btn-secondary">
+        <span>{{ buttonName }}</span>
+      </button>
     </div>
   </form>
 </template>
 
 <script lang="ts">
-import { ref as reference, computed } from "vue";
+import { ref as reference, computed, watch } from "vue";
 import { useStore } from "vuex";
 
 // import { storage } from "./../../firebase";
 // import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export default {
   props: ["id", "Editabletopic", "buttonName"],
-  setup(props: any, context: any) {
-    console.log(props.Editabletopic);
 
+  setup(props: any, context: any) {
     const $store = useStore();
     const topicname = reference();
     // const videofile = reference();
     const videolink = reference();
     const fileType = reference("");
     const topic = reference();
+    const btnName = reference();
     const editData = computed(() => {
       return props.Editabletopic;
     });
-    const id = computed(() => {
+    const contentId = computed(() => {
       return props.id;
     });
-    const buttonname = computed(() => {
-      return props.buttonName;
-    });
-
-    if (buttonname.value == "Edit") {
+    if (props.buttonName == "Edit") {
       topicname.value = editData.value.topicname;
+      videolink.value = editData.value.videoLink;
+      fileType.value = editData.value.fileType;
     }
 
     async function onAdd() {
@@ -78,11 +78,20 @@ export default {
         videolink: videolink.value,
         fileType: fileType.value,
       };
-      await $store.dispatch("courses/addTopic", {
-        id: id.value,
-        topic: topic.value,
-      });
-      const topics = $store.dispatch("courses/getTopics", id.value);
+
+      if (props.buttonName != "Edit") {
+        await $store.dispatch("courses/addTopic", {
+          id: contentId.value,
+          topic: topic.value,
+        });
+      } else {
+        await $store.dispatch("courses/editTopic", {
+          id: contentId.value,
+          topicId: editData.value.id,
+          topic: topic.value,
+        });
+      }
+      const topics = $store.dispatch("courses/getTopics", contentId.value);
       context.emit("topics", topics);
       context.emit("close", true);
     }
@@ -99,7 +108,7 @@ export default {
     //     });
     //   });
     // }
-    return { onAdd, topicname, videolink, fileType, buttonname };
+    return { onAdd, topicname, videolink, fileType, btnName };
   },
 };
 </script>

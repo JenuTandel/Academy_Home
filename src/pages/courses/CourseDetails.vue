@@ -19,7 +19,7 @@
         @close="closeDialog"
         :id="titleId"
         :Editabletopic="Editabletopic"
-        :btnName="buttonName"
+        :buttonName="buttonName"
       >
       </course-topic>
     </base-dialog>
@@ -168,29 +168,29 @@
                 <form
                   class="d-flex"
                   @submit.prevent="onSaveTitle(index)"
-                  v-if="!data[index].contentTitle || isEditable"
+                  v-if="!data[index].contentTitle || isEditable === index"
                 >
                   <input
                     type="text"
                     :id="'field-' + index"
                     :name="'field-' + index"
-                    v-model="field.value"
                     placeholder="title"
                     class="form-control"
+                    v-model="field.value"
                   />
                   <button type="submit" class="btn btn-primary ms-2">
                     Save
                   </button>
                   <!-- v-if="data[index].contentTitle" -->
                 </form>
-                <div class="d-flex">
+                <div class="d-flex" v-if="isEditable !== index">
                   <p>
                     {{ data[index].contentTitle }}
                   </p>
                   <span
                     class="icon-edit ms-3"
-                    v-if="isAdmin"
-                    @click="onEditTitle(data[index].contentTitle)"
+                    v-if="isAdmin && data[index].contentTitle"
+                    @click="onEditTitle(index, data[index].contentTitle)"
                   ></span>
                 </div>
                 <div v-if="isAdmin">
@@ -291,11 +291,11 @@ export default {
     const data = ref();
     data.value = [{ value: "" }];
     const topics = ref();
-    const isEditable = ref(false);
+    const isEditable = ref();
     const deleteSectionId = ref();
     const deleteTopicId = ref();
     const Editabletopic = ref();
-    const buttonName = ref();
+    const buttonName = ref("Add");
 
     const userLoggedIn = computed(() => {
       return localStorage.getItem("userId");
@@ -369,11 +369,22 @@ export default {
     }
 
     async function onSaveTitle(index: any) {
-      await $store.dispatch("courses/addContentTitle", {
+      if (data.value[index].contentTitle) {
+        await $store.dispatch("courses/editContentTitle", {
+          id: $route.params.id,
+          contentId: data.value[index].id,
+          title: data.value[index].value,
+        });
+        isEditable.value = null;
+      } else {
+        await $store.dispatch("courses/addContentTitle", {
+          id: $route.params.id,
+          title: data.value[index].value,
+        });
+      }
+      await $store.dispatch("courses/getContentTitle", {
         id: $route.params.id,
-        title: data.value[index].value,
       });
-      $store.dispatch("courses/getContentTitle", { id: $route.params.id });
     }
 
     function addContent(id: any) {
@@ -421,8 +432,9 @@ export default {
       });
       deleteDialogVisibility.value = false;
     }
-    function onEditTitle(title: any) {
-      isEditable.value = true;
+    function onEditTitle(idx: number, title: any) {
+      isEditable.value = idx;
+      data.value[idx].value = title;
     }
 
     function onDeleteTopic(id: any) {
