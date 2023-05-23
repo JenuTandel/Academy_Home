@@ -1,6 +1,10 @@
 <template>
   <div class="row gy-4">
-    <div class="col-3" v-for="course in allCourses" :key="course.id">
+    <div
+      class="col-xl-3 col-lg-4 col-md-6 col-12"
+      v-for="course in allCourses"
+      :key="course.id"
+    >
       <div class="card" @click="onCard(course.id, course.courseName)">
         <dialog open class="border translate-middle-y">
           <h4 class="mb-2">{{ course.courseName }}</h4>

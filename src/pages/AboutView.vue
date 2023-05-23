@@ -7,7 +7,7 @@
       class="text-center mt-3 d-flex flex-column flex-grow-1 justify-content-center"
     >
       <h3>Our Story</h3>
-      <p>
+      <p class="mb-3">
         We provide easy learning with your interested area and helps you to
         achieve your task.
       </p>
@@ -54,9 +54,20 @@
   margin-top: -50px;
   margin-bottom: 30px;
 
+  @include media-breakpoint-down(sm) {
+    flex-direction: column;
+    margin: 0;
+    width: 90%;
+  }
   .card {
     height: 230px;
     width: 230px;
+
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+      height: 100%;
+      margin: 10px 0px;
+    }
   }
 }
 </style>

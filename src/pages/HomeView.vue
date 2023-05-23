@@ -1,9 +1,11 @@
 <template>
-  <div class="row gx-0 h-100 align-items-center">
-    <div class="col-7 d-flex justify-content-center">
+  <div class="row gx-0 h-100 align-items-lg-center">
+    <div class="col-lg-7 col-12 d-flex justify-content-center">
       <img src="../assets/images/home_bg.png" class="shadow" />
     </div>
-    <div class="col-5 d-flex flex-column align-items-center p-3">
+    <div
+      class="col-lg-5 col-12 d-flex flex-column align-items-md-center justify-content-center p-3"
+    >
       <h1 class="text-center text-primary mb-4">
         <span class="d-block"> Explore your creativity </span>
         <span> with your personal guide </span>
@@ -43,3 +45,11 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+</style>

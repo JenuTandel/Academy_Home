@@ -81,7 +81,7 @@
 
     <!-- start: course all details -->
     <div class="row bg-light p-5 align-items-center gx-0">
-      <div class="col-7 text-white">
+      <div class="col-md-7 col-12 text-white order-1 order-md-0">
         <h2 class="mb-3">{{ details.course.courseName }}</h2>
         <p class="mb-3 fs-5">{{ details.course.courseDetails }}</p>
         <p class="mb-3">Created By : {{ details.course.authorName }}</p>
@@ -98,7 +98,7 @@
           {{ enrollButtonText }}
         </button>
       </div>
-      <div class="col-5">
+      <div class="col-md-5 col-12 order-0 order-md-1 mb-3">
         <div class="bg-white p-3 rounded-2">
           <div class="img-wrapper mb-3">
             <img :src="details.course.courseImage" />

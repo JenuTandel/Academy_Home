@@ -10,14 +10,14 @@
     </base-dialog>
     <div class="row gx-0 bg-light h-100">
       <!-- start: column1 -->
-      <div class="col-6">
+      <div class="col-md-6 d-md-block d-none">
         <img src="./../../assets/images/login_bg.png" class="h-100 w-100" />
       </div>
       <!-- end: column1 -->
 
       <!-- start: column2 -->
       <div
-        class="col-6 d-flex flex-column align-items-center justify-content-center"
+        class="col-md-6 col-12 d-flex flex-column align-items-center justify-content-center"
       >
         <!-- logo -->
         <img class="logo" src="./../../assets/images/logo.png" />
@@ -137,5 +137,14 @@ export default {
 form {
   width: 400px;
   height: 300px;
+
+  @include media-breakpoint-down(sm) {
+    width: 320px;
+  }
+}
+img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 </style>

@@ -1,14 +1,11 @@
 import axios from "axios";
-
+const baseUrl = process.env.VUE_APP_BASE_URL;
 export default {
   async registration(context: any, payload: any) {
     const data = payload;
     const userId = context.getters.getUserId;
     await axios
-      .put(
-        `https://academy-home-default-rtdb.firebaseio.com/registration/${userId}.json`,
-        data
-      )
+      .put(`${baseUrl}registration/${userId}.json`, data)
       .then(() => {
         return;
       })
@@ -87,32 +84,28 @@ export default {
   },
   async getUsers(context: any) {
     context.rootState.courses.isLoading = true;
-    await axios
-      .get("https://academy-home-default-rtdb.firebaseio.com/registration.json")
-      .then((res) => {
-        const users = [];
-        for (const key in res.data) {
-          const user = {
-            id: key,
-            firstname: res.data[key].firstname,
-            lastname: res.data[key].lastname,
-            email: res.data[key].email,
-            phoneno: res.data[key].phoneno,
-            joiningDate: res.data[key].joiningDate,
-            skills: res.data[key].skills,
-          };
-          users.push(user);
-        }
-        context.commit("getUsers", users);
-        context.rootState.courses.isLoading = false;
-      });
+    await axios.get(`${baseUrl}registration.json`).then((res) => {
+      const users = [];
+      for (const key in res.data) {
+        const user = {
+          id: key,
+          firstname: res.data[key].firstname,
+          lastname: res.data[key].lastname,
+          email: res.data[key].email,
+          phoneno: res.data[key].phoneno,
+          joiningDate: res.data[key].joiningDate,
+          skills: res.data[key].skills,
+        };
+        users.push(user);
+      }
+      context.commit("getUsers", users);
+      context.rootState.courses.isLoading = false;
+    });
   },
 
   async removeUser(_: any, payload: any) {
     const id = payload;
-    await axios.delete(
-      `https://academy-home-default-rtdb.firebaseio.com/registration/${id}.json`
-    );
+    await axios.delete(`${baseUrl}registration/${id}.json`);
     await axios.delete(
       "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBDWp5tagLwUNX3kUOpPO2cCZh0VV00s"
     );
@@ -121,10 +114,10 @@ export default {
   async updateUser(context: any, payload: any) {
     const userId = localStorage.getItem("userId");
     await axios
-      .post(
-        `https://academy-home-default-rtdb.firebaseio.com/registration/${userId}/enrolledCourses.json`,
-        { enrollText: payload.enrolled, courseId: payload.id }
-      )
+      .post(`${baseUrl}registration/${userId}/enrolledCourses.json`, {
+        enrollText: payload.enrolled,
+        courseId: payload.id,
+      })
       .then(() => {
         //
       });
@@ -137,9 +130,7 @@ export default {
     let enrollText = "Enroll Now";
 
     await axios
-      .get(
-        `https://academy-home-default-rtdb.firebaseio.com/registration/${userId}/enrolledCourses.json`
-      )
+      .get(`${baseUrl}registration/${userId}/enrolledCourses.json`)
       .then((res) => {
         for (const key in res.data) {
           if (res.data[key].courseId == courseId) {

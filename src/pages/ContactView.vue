@@ -97,7 +97,7 @@
     <!-- end: contact form-->
     <!-- start: contact footer -->
     <div
-      class="d-flex justify-content-between bg-primary align-items-center text-white py-3 px-3"
+      class="contact-footer d-flex justify-content-between bg-primary align-items-center text-white py-3 px-3"
     >
       <div class="text-center">
         <p>Call Us</p>
@@ -188,8 +188,20 @@ export default {
 }
 form {
   width: 400px;
+  @include media-breakpoint-down(sm) {
+    width: 320px;
+  }
   a {
     cursor: pointer;
+  }
+}
+
+.contact-footer {
+  @include media-breakpoint-down(sm) {
+    flex-direction: column;
+    div {
+      margin-bottom: 10px;
+    }
   }
 }
 </style>
