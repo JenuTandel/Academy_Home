@@ -1,5 +1,5 @@
 <template>
-  <section class="d-flex flex-column h-100">
+  <section class="d-flex flex-column h-100" id="about-us">
     <div class="image-wrapper">
       <img src="../assets/images/about.jpg" />
     </div>
@@ -38,36 +38,3 @@
     <!-- end: card-wrapper -->
   </section>
 </template>
-<script lang="ts"></script>
-<style scoped lang="scss">
-.image-wrapper {
-  height: 400px;
-  width: 100%;
-
-  img {
-    height: 100%;
-    width: 100%;
-  }
-}
-.card-wrapper {
-  width: 600px;
-  margin-top: -50px;
-  margin-bottom: 30px;
-
-  @include media-breakpoint-down(sm) {
-    flex-direction: column;
-    margin: 0;
-    width: 90%;
-  }
-  .card {
-    height: 230px;
-    width: 230px;
-
-    @include media-breakpoint-down(sm) {
-      width: 100%;
-      height: 100%;
-      margin: 10px 0px;
-    }
-  }
-}
-</style>

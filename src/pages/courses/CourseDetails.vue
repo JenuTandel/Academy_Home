@@ -497,11 +497,13 @@ export default {
 <style scoped lang="scss">
 .img-wrapper {
   height: 200px;
+
   img {
     height: 100%;
     width: 100%;
   }
 }
+
 .topicName {
   color: purple;
   cursor: pointer;

@@ -1,5 +1,5 @@
 <template>
-  <section class="h-100">
+  <section class="h-100" id="login-form">
     <!-- start: row -->
     <base-dialog :show="!!error" title="Error" @close="handleError">
       <template #header></template>
@@ -128,23 +128,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss">
-.logo {
-  height: 100px;
-  width: 200px;
-}
-form {
-  width: 400px;
-  height: 300px;
-
-  @include media-breakpoint-down(sm) {
-    width: 320px;
-  }
-}
-img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-</style>

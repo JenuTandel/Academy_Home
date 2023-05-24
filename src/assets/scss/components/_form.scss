@@ -1,0 +1,43 @@
+#login-form {
+    form {
+        width: 400px;
+        height: 300px;
+
+        @include media-breakpoint-down(sm) {
+            width: 320px;
+        }
+    }
+
+    .logo {
+        height: 100px;
+        width: 200px;
+    }
+
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+#registration-form {
+    form {
+        width: 400px;
+        height: 580px;
+
+        @include media-breakpoint-down(sm) {
+            width: 320px;
+        }
+    }
+
+    .logo {
+        height: 100px;
+        width: 200px;
+    }
+
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}

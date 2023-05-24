@@ -1,88 +1,29 @@
 <template>
-  <div class="nav bg-primary justify-content-between">
+  <div class="nav bg-primary justify-content-between align-items-center">
     <figure class="logo">
       <img src="../../assets/images/logo.png" alt="logo" />
     </figure>
-    <ul class="nav bg-primary justify-content-end">
-      <li class="nav-item">
-        <router-link to="/home" class="nav-link">Home</router-link>
-      </li>
-      <li class="nav-item">
-        <router-link to="/about-us" class="nav-link">About Us</router-link>
-      </li>
-      <li class="nav-item">
-        <router-link to="/contact-us" class="nav-link"
-          ><span v-if="isAdmin">Contacts</span
-          ><span v-else>Contact Us</span></router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link to="/courses" class="nav-link">Courses</router-link>
-      </li>
-      <li class="nav-item" v-if="isAdmin">
-        <router-link to="/users" class="nav-link">Users</router-link>
-      </li>
-      <li class="nav-item" v-if="!visibleLogout">
-        <router-link to="/login" class="nav-link">Login</router-link>
-      </li>
-      <li class="nav-item" v-if="!visibleLogout">
-        <router-link to="/registration" class="nav-link"
-          >Registration</router-link
-        >
-      </li>
-      <li class="nav-item" v-if="visibleLogout" @click="onLogout">
-        <a class="nav-link">Logout</a>
-      </li>
+    <span
+      class="icon icon-menu m-2 fs-3 text-white d-block d-md-none"
+      @click="onMenu"
+    ></span>
+    <ul class="nav bg-primary justify-content-end d-none d-md-flex">
+      <header-menu></header-menu>
     </ul>
   </div>
 </template>
+
 <script lang="ts">
-import { watch, computed } from "vue";
+import HeaderMenu from "./HeaderMenu.vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 export default {
+  components: { HeaderMenu },
   setup() {
     const $store = useStore();
-    const $router = useRouter();
-    const isAdmin = computed(() => {
-      return $store.getters.isAdmin;
-    });
-
-    watch(isAdmin, () => {
-      return isAdmin.value;
-    });
-
-    const visibleLogout = computed(() => {
-      return $store.getters.isLogin;
-    });
-
-    watch(visibleLogout, () => {
-      return visibleLogout.value;
-    });
-
-    async function onLogout() {
-      await $store.dispatch("logout");
-      $router.push("/login");
+    function onMenu() {
+      $store.state.sidebarOpen = true;
     }
-    return {
-      visibleLogout,
-      onLogout,
-      isAdmin,
-    };
+    return { onMenu };
   },
 };
 </script>
-<style scoped lang="scss">
-.active,
-.active:focus,
-.nav-link:hover {
-  color: orange;
-}
-.logo {
-  width: 100px;
-  img {
-    height: 100%;
-    width: 100%;
-  }
-}
-</style>

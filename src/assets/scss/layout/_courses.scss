@@ -1,0 +1,33 @@
+#course-list {
+    img {
+        height: 100px;
+        width: 150px;
+    }
+
+    .search {
+        width: 25%;
+    }
+}
+
+#complete-course {
+    .sidebar {
+        z-index: 10;
+    }
+
+    .btn-sidebar {
+        z-index: 200;
+        position: absolute;
+        top: 50px;
+        left: 0;
+
+        &:hover {
+            .content-title {
+                display: inline-block;
+            }
+        }
+    }
+
+    .content-title {
+        display: none;
+    }
+}

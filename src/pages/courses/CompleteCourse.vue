@@ -1,5 +1,5 @@
 <template>
-  <section class="h-100 w-100 position-relative">
+  <section class="h-100 w-100 position-relative" id="complete-course">
     <button
       type="button"
       class="btn-sidebar bg-dark px-3 py-2"
@@ -261,24 +261,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss">
-.sidebar {
-  z-index: 10;
-}
-.btn-sidebar {
-  z-index: 200;
-  position: absolute;
-  top: 50px;
-  left: 0;
-
-  &:hover {
-    .content-title {
-      display: inline-block;
-    }
-  }
-}
-.content-title {
-  display: none;
-}
-</style>

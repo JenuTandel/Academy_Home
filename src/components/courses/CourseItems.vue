@@ -53,9 +53,6 @@ export default {
       }
     }
     return { onCard };
-    // const courses = ref();
-    // courses.value = inject("allCourses");
-    // return { courses };
   },
 };
 </script>

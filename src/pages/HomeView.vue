@@ -1,7 +1,7 @@
 <template>
   <div class="row gx-0 h-100 align-items-lg-center">
     <div class="col-lg-7 col-12 d-flex justify-content-center">
-      <img src="../assets/images/home_bg.png" class="shadow" />
+      <img src="../assets/images/home_bg.png" class="shadow home-hero-image" />
     </div>
     <div
       class="col-lg-5 col-12 d-flex flex-column align-items-md-center justify-content-center p-3"
@@ -45,11 +45,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss">
-img {
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-</style>

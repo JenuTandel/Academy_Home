@@ -1,5 +1,5 @@
 <template>
-  <section class="p-3 h-100 overflow-auto">
+  <section class="p-3 h-100 overflow-auto" id="course-list">
     <base-dialog
       :show="deleteDialogVisibility"
       title="Delete"
@@ -206,18 +206,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-img {
-  height: 100px;
-  width: 150px;
-}
-/* .table {
-  width: 70%;
-  margin: auto;
-} */
-
-.search {
-  width: 25%;
-}
-</style>

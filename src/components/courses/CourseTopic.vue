@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { ref as reference, computed, watch } from "vue";
+import { ref as reference, computed } from "vue";
 import { useStore } from "vuex";
 
 // import { storage } from "./../../firebase";

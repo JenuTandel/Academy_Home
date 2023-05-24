@@ -40,7 +40,7 @@
       </div>
     </div>
   </section>
-  <section v-else class="d-flex flex-column h-100">
+  <section v-else class="d-flex flex-column h-100" id="contact-us">
     <div class="image-wrapper">
       <img src="../assets/images/contact.jpg" />
     </div>
@@ -176,32 +176,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss">
-.image-wrapper {
-  width: 100%;
-  height: 400px;
-  img {
-    height: 100%;
-    width: 100%;
-  }
-}
-form {
-  width: 400px;
-  @include media-breakpoint-down(sm) {
-    width: 320px;
-  }
-  a {
-    cursor: pointer;
-  }
-}
-
-.contact-footer {
-  @include media-breakpoint-down(sm) {
-    flex-direction: column;
-    div {
-      margin-bottom: 10px;
-    }
-  }
-}
-</style>

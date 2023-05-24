@@ -7,6 +7,7 @@ import contactModule from "./modules/contact";
 export default createStore({
   state: {
     toaster: {},
+    sidebarOpen: false,
   },
   getters: {},
   mutations: {},

@@ -19,7 +19,7 @@ export default {
   async getCourses(context: any) {
     context.commit("isLoading", true);
     await axios
-      .get(`${baseUrl}/courses.json`)
+      .get(`${baseUrl}courses.json`)
       .then((res) => {
         return res.data;
       })
@@ -132,7 +132,7 @@ export default {
     const id = payload.deleteId;
     console.log(id);
 
-    await axios.delete(`${baseUrl}courseDetails/${id}.json`).then((res) => {
+    await axios.delete(`${baseUrl}courseDetails/${id}.json`).then(() => {
       context.dispatch("getContentTitle", { id: payload.courseId });
     });
   },
@@ -156,7 +156,7 @@ export default {
         contentId: id,
         topic: payload.topic,
       })
-      .then((res) => {
+      .then(() => {
         // console.log(res);
       });
   },
@@ -184,7 +184,7 @@ export default {
 
   async deleteTopic(context: any, payload: any) {
     const id = payload.id;
-    await axios.delete(`${baseUrl}Topics/${id}.json`).then((res) => {
+    await axios.delete(`${baseUrl}Topics/${id}.json`).then(() => {
       context.dispatch("getTopics");
     });
   },
@@ -198,7 +198,7 @@ export default {
         contentId: id,
         topic: payload.topic,
       })
-      .then((res) => {
+      .then(() => {
         // console.log(res);
       });
   },
