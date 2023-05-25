@@ -20,6 +20,10 @@
     margin: auto;
     overflow: hidden;
     background-color: white;
+
+    @include media-breakpoint-down(md) {
+        width: 80%;
+    }
 }
 
 header {
