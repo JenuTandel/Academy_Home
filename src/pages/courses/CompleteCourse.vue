@@ -11,13 +11,16 @@
     </button>
     <div class="row gx-0 h-100 justify-content-center">
       <!-- <p>Hellooooo</p> -->
-      <div class="col-4" v-if="isSidebar">
+      <div class="col-12 col-md-4 order-1 order-md-0" v-if="isSidebar">
         <aside class="sidebar h-100 border-end py-3 pe-2">
           <div
             class="d-flex justify-content-between align-items-center mx-3 mb-3"
           >
             <h4>Course Content</h4>
-            <span class="icon-close" @click="onSidebarClose"></span>
+            <span
+              class="icon-close d-none d-md-block"
+              @click="onSidebarClose"
+            ></span>
           </div>
           <!-- start: accordian -->
           <div
@@ -94,7 +97,7 @@
           <!-- end: accordian -->
         </aside>
       </div>
-      <div class="col-8 p-2">
+      <div class="col-12 col-md-8 p-2 order-0 order-md-1">
         <topic-preview
           :topic="topic"
           :contentTitle="topicContentTitle"

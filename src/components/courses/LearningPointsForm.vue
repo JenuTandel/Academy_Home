@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 
@@ -40,6 +40,16 @@ export default {
     const id = ref();
     id.value = $route.params.id;
     const learningPoint = ref([{ value: "" }]);
+    const data = ref([] as any);
+
+    $store.dispatch("courses/getCourseById", id.value);
+    const courseData = computed(() => {
+      return $store.getters["courses/Course"];
+    });
+    watch(courseData, () => {
+      data.value = courseData.value.learningPoints;
+      console.log(data.value);
+    });
 
     function addLearningPoint() {
       learningPoint.value.push({ value: "" });
@@ -48,9 +58,17 @@ export default {
       learningPoint.value.splice(deleteIndex, 1);
     }
     function onSubmit() {
+      if (data.value) {
+        learningPoint.value.forEach((element) => {
+          data.value.push(element);
+        });
+      } else {
+        data.value = learningPoint.value;
+      }
+
       $store.dispatch("courses/addLearningPoints", {
         id: id.value,
-        learningPoint: learningPoint.value,
+        learningPoint: data.value,
       });
       context.emit("close", true);
     }

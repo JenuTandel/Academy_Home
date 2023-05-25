@@ -60,6 +60,7 @@ export default {
         context.commit("courseData", {
           ...res.data,
           courseImage: res.data.courseImage._value,
+          learningPoints: res.data?.learningPoints,
         });
         context.commit("isLoading", false);
       })

@@ -79,6 +79,28 @@
     </base-dialog>
     <!-- end: delete topic dialog -->
 
+    <!-- start: delete learningPoint dialog -->
+    <base-dialog
+      :show="deleteLearningPointDialogVisibility"
+      title="Delete"
+      @close="closeDialog"
+    >
+      <template #header> </template>
+      <template #default>
+        <p>Are you sure to delete this learningPoint?</p>
+      </template>
+      <template #action>
+        <button
+          class="btn btn-success me-3"
+          @click="onDeleteLearningPointConfirm"
+        >
+          Ok
+        </button>
+        <button class="btn btn-dark" @click="closeDialog">Cancel</button>
+      </template>
+    </base-dialog>
+    <!-- end: delete learningPoint dialog -->
+
     <!-- start: course all details -->
     <div class="row bg-light p-5 align-items-center gx-0">
       <div class="col-md-7 col-12 text-white order-1 order-md-0">
@@ -130,6 +152,10 @@
         <p class="mb-2">
           <span class="icon icon-done me-3"></span>
           {{ i.value }}
+          <span
+            class="icon icon-delete text-danger"
+            @click="removeLearningPoint(index)"
+          ></span>
         </p>
       </div>
     </div>
@@ -285,6 +311,7 @@ export default {
     const topicDialogVisibility = ref(false);
     const deleteDialogVisibility = ref(false);
     const deleteTopicDialogVisibility = ref(false);
+    const deleteLearningPointDialogVisibility = ref(false);
     const titleId = ref();
     const topic = ref();
     const topicContentTitle = ref();
@@ -296,6 +323,7 @@ export default {
     const deleteTopicId = ref();
     const Editabletopic = ref();
     const buttonName = ref("Add");
+    const learningPointIndex = ref();
 
     const userLoggedIn = computed(() => {
       return localStorage.getItem("userId");
@@ -361,6 +389,7 @@ export default {
       contentDialogVisibility.value = false;
       topicDialogVisibility.value = false;
       deleteDialogVisibility.value = false;
+      deleteLearningPointDialogVisibility.value = false;
     }
     async function getCall(get: any) {
       if (get) {
@@ -456,6 +485,20 @@ export default {
       buttonName.value = "Edit";
     }
 
+    function removeLearningPoint(index: any) {
+      deleteLearningPointDialogVisibility.value = true;
+      learningPointIndex.value = index;
+    }
+
+    async function onDeleteLearningPointConfirm() {
+      details.course.learningPoints.splice(learningPointIndex.value, 1);
+      await $store.dispatch("courses/addLearningPoints", {
+        id: id,
+        learningPoint: details.course.learningPoints,
+      });
+      deleteLearningPointDialogVisibility.value = false;
+    }
+
     return {
       details,
       addDetails,
@@ -480,6 +523,7 @@ export default {
       enrollButtonText,
       deleteDialogVisibility,
       deleteTopicDialogVisibility,
+      deleteLearningPointDialogVisibility,
       onDeleteSection,
       onDeleteConfirm,
       onEditTitle,
@@ -489,6 +533,8 @@ export default {
       onEditTopic,
       Editabletopic,
       buttonName,
+      removeLearningPoint,
+      onDeleteLearningPointConfirm,
     };
   },
 };
