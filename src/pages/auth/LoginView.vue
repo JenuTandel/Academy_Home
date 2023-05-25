@@ -1,5 +1,5 @@
 <template>
-  <section class="h-100" id="login-form">
+  <section class="h-100" id="auth-form">
     <!-- start: row -->
     <base-dialog :show="!!error" title="Error" @close="handleError">
       <template #header></template>
@@ -20,7 +20,9 @@
         class="col-md-6 col-12 d-flex flex-column align-items-center justify-content-center"
       >
         <!-- logo -->
-        <img class="logo" src="./../../assets/images/logo.png" />
+        <div class="logo-wrapper">
+          <img class="logo" src="./../../assets/images/logo.png" />
+        </div>
         <!-- start: form -->
         <Form
           class="rounded border p-3"

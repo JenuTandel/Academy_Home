@@ -155,6 +155,7 @@
           <span
             class="icon icon-delete text-danger"
             @click="removeLearningPoint(index)"
+            v-if="isAdmin"
           ></span>
         </p>
       </div>

@@ -1,5 +1,9 @@
 <template>
-  <section class="h-100 w-100 position-relative" id="complete-course">
+  <section
+    class="h-100 w-100 position-relative overflow-auto"
+    id="complete-course"
+    ref="section"
+  >
     <button
       type="button"
       class="btn-sidebar bg-dark px-3 py-2"
@@ -10,7 +14,6 @@
       <span class="icon-arrow-right text-white"></span>
     </button>
     <div class="row gx-0 h-100 justify-content-center">
-      <!-- <p>Hellooooo</p> -->
       <div class="col-12 col-md-4 order-1 order-md-0" v-if="isSidebar">
         <aside class="sidebar h-100 border-end py-3 pe-2">
           <div
@@ -39,30 +42,7 @@
                   aria-expanded="true"
                   aria-controls="collapseOne"
                 >
-                  <div
-                    class="d-flex justify-content-between align-items-center w-100"
-                  >
-                    <form
-                      class="d-flex"
-                      @submit.prevent="onSaveTitle(index)"
-                      v-if="!data[index].contentTitle"
-                    >
-                      <input
-                        type="text"
-                        :id="'field-' + index"
-                        :name="'field-' + index"
-                        v-model="field.value"
-                        placeholder="title"
-                        class="form-control"
-                      />
-                      <button type="submit" class="btn btn-primary ms-2">
-                        Save
-                      </button>
-                    </form>
-                    <p>
-                      Section {{ index + 1 }}: {{ data[index].contentTitle }}
-                    </p>
-                  </div>
+                  <p>Section {{ index + 1 }}: {{ data[index].contentTitle }}</p>
                 </div>
               </h2>
               <div
@@ -78,6 +58,9 @@
                     <p
                       class="cursor-pointer"
                       @click="onTopic(topic, data[index].contentTitle)"
+                      :class="[
+                        clickonTopic === topic.id ? 'visited-topic' : '',
+                      ]"
                     >
                       <span
                         class="icon-ondemand_video me-2"
@@ -156,6 +139,8 @@ export default {
     const topic = ref();
     const isSidebar = ref(true);
     const isOpenButton = ref(false);
+    const clickonTopic = ref();
+    const section = ref(null);
 
     const contentTitles = computed(() => {
       return $store.getters["courses/ContentTitles"];
@@ -171,15 +156,10 @@ export default {
     const topicData = computed(() => {
       return $store.getters["courses/Topics"];
     });
-    // watch(
-    //   topicData,
-    //   () => {
-    //     topics.value = topicData.value;
-    //   },
-    //   { immediate: true }
-    // );
+
     onMounted(() => {
       watch(topicData, () => {
+        topicContentTitle.value = data.value[0].contentTitle;
         topics.value = topicData.value;
         for (let i in topics.value) {
           if (data.value[0]?.id == topics.value[i].contentId) {
@@ -187,7 +167,6 @@ export default {
             break;
           }
         }
-        console.log(data.value);
       });
     });
 
@@ -217,21 +196,12 @@ export default {
       }
     }
 
-    async function onSaveTitle(index: any) {
-      await $store.dispatch("courses/addContentTitle", {
-        id: $route.params.id,
-        title: data.value[index].value,
-      });
-      $store.dispatch("courses/getContentTitle", { id: $route.params.id });
-    }
-
-    function addContent(id: any) {
-      titleId.value = id;
-    }
-
     function onTopic(topicData: any, contentTitle: any) {
       topic.value = topicData;
       topicContentTitle.value = contentTitle;
+      clickonTopic.value = topicData.id;
+      const mainElement = document.getElementById("complete-course");
+      mainElement?.scroll(0, 0);
     }
 
     function isSidebarButton() {
@@ -247,9 +217,7 @@ export default {
     return {
       details,
       getCall,
-      onSaveTitle,
       title,
-      addContent,
       data,
       titleId,
       topics,
@@ -260,7 +228,14 @@ export default {
       isSidebar,
       isSidebarButton,
       onSidebarClose,
+      clickonTopic,
     };
   },
 };
 </script>
+
+<style scoped>
+.visited-topic {
+  color: purple;
+}
+</style>

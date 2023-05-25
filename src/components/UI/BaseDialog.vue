@@ -1,7 +1,7 @@
 <template>
   <div v-if="show" class="backdrop" @click="onClose"></div>
   <transition name="dialog">
-    <dialog open v-if="show" :style="customHeight">
+    <dialog class="base-dialog" open v-if="show" :style="customHeight">
       <header class="bg-danger" v-if="$slots.header">
         <slot name="header">
           <h2>{{ title }}</h2>

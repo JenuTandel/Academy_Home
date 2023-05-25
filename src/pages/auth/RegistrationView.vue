@@ -1,5 +1,5 @@
 <template>
-  <section class="h-100" id="registration-form">
+  <section class="h-100 bg-light overflow-auto" id="auth-form">
     <base-dialog :show="!!error" title="Error" @close="handleError">
       <template #header></template>
       <template #default>
@@ -8,7 +8,7 @@
       <template #action></template>
     </base-dialog>
     <!-- start: row -->
-    <div class="row gx-0 h-100 bg-light">
+    <div class="row gx-0 h-100">
       <!-- start: column1 -->
       <div class="col-md-6 d-md-block d-none">
         <img src="../../assets/images/login_bg.png" class="h-100 w-100" />
@@ -16,10 +16,12 @@
       <!-- end: column1 -->
       <!-- start: column2 -->
       <div
-        class="col-md-6 col-12 h-100 d-flex flex-column p-4 align-items-center justify-content-center"
+        class="col-md-6 col-12 flex-grow-1 d-flex flex-column p-4 align-items-center justify-content-center"
       >
         <!-- logo -->
-        <img class="logo" src="../../assets/images/logo.png" />
+        <div class="logo-wrapper">
+          <img class="logo" src="../../assets/images/logo.png" />
+        </div>
         <!-- start: form -->
         <Form
           class="rounded border p-3"

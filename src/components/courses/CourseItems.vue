@@ -1,35 +1,39 @@
 <template>
-  <div class="row gy-4">
-    <div
-      class="col-xl-3 col-lg-4 col-md-6 col-12"
-      v-for="course in allCourses"
-      :key="course.id"
-    >
-      <div class="card" @click="onCard(course.id, course.courseName)">
-        <dialog open class="border translate-middle-y">
-          <h4 class="mb-2">{{ course.courseName }}</h4>
-          <p class="mb-2 text-success">{{ course.courseDate }}</p>
-          <p class="mb-2 text-dark opacity-75">
-            {{ course.timeDuration }} total hrs
-          </p>
-          <p class="mb-2">{{ course.courseDetails }}</p>
-          <!-- <button type="button" class="btn btn-secondary text-white">
+  <section class="course-items overflow-hidden">
+    <div class="row gy-4">
+      <div
+        class="col-xl-3 col-lg-4 col-md-6 col-12"
+        v-for="course in allCourses"
+        :key="course.id"
+      >
+        <div class="card" @click="onCard(course.id, course.courseName)">
+          <dialog open class="border translate-middle-y">
+            <h4 class="mb-2">{{ course.courseName }}</h4>
+            <p class="mb-2 text-success">{{ course.courseDate }}</p>
+            <p class="mb-2 text-dark opacity-75">
+              {{ course.timeDuration }} total hrs
+            </p>
+            <p class="mb-2">{{ course.courseDetails }}</p>
+            <!-- <button type="button" class="btn btn-secondary text-white">
             Enroll Now
           </button> -->
-          <div class="arrow-left"></div>
-        </dialog>
-        <img
-          class="card-img-top"
-          :src="course.courseImage"
-          alt="Card image cap"
-        />
-        <div class="card-body">
-          <h5 class="card-title">{{ course.courseName }}</h5>
-          <p class="card-text text-dark opacity-50">{{ course.authorName }}</p>
+            <div class="arrow-left"></div>
+          </dialog>
+          <img
+            class="card-img-top"
+            :src="course.courseImage"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title">{{ course.courseName }}</h5>
+            <p class="card-text text-dark opacity-50">
+              {{ course.authorName }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
