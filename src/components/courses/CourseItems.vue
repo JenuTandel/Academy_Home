@@ -7,7 +7,7 @@
         :key="course.id"
       >
         <div
-          class="card"
+          class="card h-100"
           @click="onCard(course.id, course.courseName)"
           @mouseenter="startMonitoring(course.id)"
           :id="course.id"
@@ -40,11 +40,13 @@
             </dialog>
           </transition>
 
-          <img
-            class="card-img-top"
-            :src="course.courseImage"
-            alt="Card image cap"
-          />
+          <div class="image-wrapper">
+            <img
+              class="card-img-top"
+              :src="course.courseImage"
+              alt="Card image cap"
+            />
+          </div>
           <div class="card-body">
             <h5 class="card-title">{{ course.courseName }}</h5>
             <p class="card-text text-dark opacity-50">
@@ -195,6 +197,13 @@ dialog {
   position: absolute;
   top: 45%;
   right: -3%;
+}
+
+.image-wrapper {
+  height: 70%;
+  img {
+    height: 100%;
+  }
 }
 .tooltip-enter-from {
   opacity: 0;

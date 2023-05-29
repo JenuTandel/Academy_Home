@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <div v-for="(field, index) in learningPoint" :key="index">
+    <div v-for="(field, index) in learningPoint" :key="index" class="mb-3">
       <input
         :id="'field-' + index"
         :name="'field-' + index"
@@ -32,6 +32,7 @@
 import { ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
+import courseService from "@/pages/courses/services/courses.services";
 
 export default {
   setup(_: any, context: any) {
@@ -42,7 +43,7 @@ export default {
     const learningPoint = ref([{ value: "" }]);
     const data = ref([] as any);
 
-    $store.dispatch("courses/getCourseById", id.value);
+    // $store.dispatch("courses/getCourseById", id.value);
     const courseData = computed(() => {
       return $store.getters["courses/Course"];
     });
@@ -66,10 +67,11 @@ export default {
         data.value = learningPoint.value;
       }
 
-      $store.dispatch("courses/addLearningPoints", {
-        id: id.value,
-        learningPoint: data.value,
-      });
+      courseService.addLearningPoints(id.value, data.value);
+      // $store.dispatch("courses/addLearningPoints", {
+      //   id: id.value,
+      //   learningPoint: data.value,
+      // });
       context.emit("close", true);
     }
     return { addLearningPoint, removeLearningPoint, learningPoint, onSubmit };

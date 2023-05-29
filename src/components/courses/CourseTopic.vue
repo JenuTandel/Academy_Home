@@ -43,6 +43,7 @@
 </template>
 
 <script lang="ts">
+import courseService from "@/pages/courses/services/courses.services";
 import { ref as reference, computed } from "vue";
 import { useStore } from "vuex";
 
@@ -80,19 +81,28 @@ export default {
       };
 
       if (props.buttonName != "Edit") {
-        await $store.dispatch("courses/addTopic", {
-          id: contentId.value,
-          topic: topic.value,
-        });
+        await courseService.addTopic(contentId.value, topic.value);
+        // await $store.dispatch("courses/addTopic", {
+        //   id: contentId.value,
+        //   topic: topic.value,
+        // });
       } else {
-        await $store.dispatch("courses/editTopic", {
-          id: contentId.value,
-          topicId: editData.value.id,
-          topic: topic.value,
-        });
+        await courseService.editTopic(
+          contentId.value,
+          editData.value.id,
+          topic.value
+        );
+        // await $store.dispatch("courses/editTopic", {
+        //   id: contentId.value,
+        //   topicId: editData.value.id,
+        //   topic: topic.value,
+        // });
       }
-      const topics = $store.dispatch("courses/getTopics", contentId.value);
-      context.emit("topics", topics);
+      await courseService.getTopics().then((res) => {
+        $store.dispatch("courses/getTopics", res);
+        context.emit("topics", res.data);
+      });
+      // const topics = $store.dispatch("courses/getTopics", contentId.value);
       context.emit("close", true);
     }
 

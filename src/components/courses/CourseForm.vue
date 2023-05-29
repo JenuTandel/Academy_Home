@@ -96,6 +96,7 @@ import { ref as refrence, reactive, onMounted } from "vue";
 import { storage } from "./../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import months from "../../services/months";
+import courseService from "@/pages/courses/services/courses.services";
 
 export default {
   components: {
@@ -136,7 +137,7 @@ export default {
     });
     async function onSubmit(data: any) {
       if (updateId.value) {
-        await $store.dispatch("courses/updateCourse", {
+        const course = {
           id: props.updateId,
           courseName: data.courseName,
           courseDetails: data.courseDetails,
@@ -146,18 +147,43 @@ export default {
           courseDate: `${
             months[new Date().getMonth()]
           } ${new Date().getFullYear()}`,
+        };
+        await courseService.updateCourse(course).then((res) => {
+          console.log(res.data);
         });
+        // await $store.dispatch("courses/updateCourse", {
+        //   id: props.updateId,
+        //   courseName: data.courseName,
+        //   courseDetails: data.courseDetails,
+        //   timeDuration: data.timeDuration,
+        //   authorName: data.authorName,
+        //   courseImage: { _value: imageUrl.value },
+        //   courseDate: `${
+        //     months[new Date().getMonth()]
+        //   } ${new Date().getFullYear()}`,
+        // });
       } else {
-        await $store.dispatch("courses/addCourse", {
+        const course = {
           ...data,
           courseDate: `${
             months[new Date().getMonth()]
           } ${new Date().getFullYear()}`,
           courseImage: imageUrl,
-        });
+        };
+        await courseService.addCourse(course);
+        // await $store.dispatch("courses/addCourse", {
+        //   ...data,
+        //   courseDate: `${
+        //     months[new Date().getMonth()]
+        //   } ${new Date().getFullYear()}`,
+        //   courseImage: imageUrl,
+        // });
       }
       context.emit("closeDialog", true);
-      $store.dispatch("courses/getCourses");
+      // $store.dispatch("courses/getCourses");
+      courseService.getCourses().then((res) => {
+        $store.dispatch("courses/getCourses", res.data);
+      });
     }
     function onCancel() {
       context.emit("closeDialog", true);

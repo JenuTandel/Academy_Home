@@ -103,7 +103,7 @@
 
     <!-- start: course all details -->
     <div class="row bg-light p-5 align-items-center gx-0">
-      <div class="col-md-7 col-12 text-white order-1 order-md-0">
+      <div class="col-md-8 col-12 text-white order-1 order-md-0">
         <h2 class="mb-3">{{ details.course.courseName }}</h2>
         <p class="mb-3 fs-5">{{ details.course.courseDetails }}</p>
         <p class="mb-3">Created By : {{ details.course.authorName }}</p>
@@ -120,7 +120,7 @@
           {{ enrollButtonText }}
         </button>
       </div>
-      <div class="col-md-5 col-12 order-0 order-md-1 mb-3">
+      <div class="col-md-4 col-12 order-0 order-md-1 mb-3">
         <div class="bg-white p-3 rounded-2">
           <div class="img-wrapper mb-3">
             <img :src="details.course.courseImage" />
@@ -296,6 +296,8 @@ import { reactive, ref, computed, watch } from "vue";
 import LearningPointsForm from "@/components/courses/LearningPointsForm.vue";
 import CourseTopic from "@/components/courses/CourseTopic.vue";
 import TopicPreview from "@/components/courses/TopicPreview.vue";
+import courseService from "./services/courses.services";
+import { string } from "yup";
 
 export default {
   components: { LearningPointsForm, CourseTopic, TopicPreview },
@@ -303,7 +305,7 @@ export default {
     const $route = useRoute();
     const $router = useRouter();
     const $store = useStore();
-    const id = $route.params.id;
+    const id = $route.params.id.toString();
 
     const details = reactive({} as any);
     const title = ref();
@@ -379,11 +381,20 @@ export default {
     }
     async function getDetails() {
       await $store.dispatch("getUserById", $route.params.id);
-      await $store.dispatch("courses/getCourseById", $route.params.id);
-      await $store.dispatch("courses/getContentTitle", {
-        id: $route.params.id,
+      // await $store.dispatch("courses/getCourseById", $route.params.id);
+      await courseService.getCourseById(id).then((res) => {
+        $store.dispatch("courses/getCourseById", res);
       });
-      await $store.dispatch("courses/getTopics");
+      // await $store.dispatch("courses/getContentTitle", {
+      //   id: $route.params.id,
+      // });
+      await courseService.getContentTitle().then((res) => {
+        $store.dispatch("courses/getContentTitle", { id: id, res: res });
+      });
+      // await $store.dispatch("courses/getTopics");
+      await courseService.getTopics().then((res) => {
+        $store.dispatch("courses/getTopics", res);
+      });
     }
     function closeDialog() {
       learningPointsDialogVisibility.value = false;
@@ -391,6 +402,7 @@ export default {
       topicDialogVisibility.value = false;
       deleteDialogVisibility.value = false;
       deleteLearningPointDialogVisibility.value = false;
+      deleteTopicDialogVisibility.value = false;
     }
     async function getCall(get: any) {
       if (get) {
@@ -400,21 +412,31 @@ export default {
 
     async function onSaveTitle(index: any) {
       if (data.value[index].contentTitle) {
-        await $store.dispatch("courses/editContentTitle", {
-          id: $route.params.id,
-          contentId: data.value[index].id,
-          title: data.value[index].value,
-        });
+        await courseService.editContentTitle(
+          id,
+          data.value[index].id,
+          data.value[index].value
+        );
+        // await $store.dispatch("courses/editContentTitle", {
+        //   id: $route.params.id,
+        //   contentId: data.value[index].id,
+        //   title: data.value[index].value,
+        // });
         isEditable.value = null;
       } else {
-        await $store.dispatch("courses/addContentTitle", {
-          id: $route.params.id,
-          title: data.value[index].value,
-        });
+        await courseService.addContentTitle(id, data.value[index].value);
+        // await $store.dispatch("courses/addContentTitle", {
+        //   id: $route.params.id,
+        //   title: data.value[index].value,
+        // });
       }
-      await $store.dispatch("courses/getContentTitle", {
-        id: $route.params.id,
+      await courseService.getContentTitle().then((res) => {
+        console.log("a", res);
+        $store.dispatch("courses/getContentTitle", { id: id, res: res });
       });
+      // await $store.dispatch("courses/getContentTitle", {
+      //   id: $route.params.id,
+      // });
     }
 
     function addContent(id: any) {
@@ -455,12 +477,19 @@ export default {
       deleteDialogVisibility.value = true;
       deleteSectionId.value = id;
     }
-    function onDeleteConfirm() {
-      $store.dispatch("courses/deleteContentTitle", {
-        deleteId: deleteSectionId.value,
-        courseId: id,
+    async function onDeleteConfirm() {
+      // $store.dispatch("courses/deleteContentTitle", {
+      //   deleteId: deleteSectionId.value,
+      //   courseId: id,
+      // });
+      await courseService
+        .deleteContentTitle(deleteSectionId.value)
+        .then((res) => {
+          deleteDialogVisibility.value = false;
+        });
+      await courseService.getContentTitle().then((res) => {
+        $store.dispatch("courses/getContentTitle", { id: id, res: res });
       });
-      deleteDialogVisibility.value = false;
     }
     function onEditTitle(idx: number, title: any) {
       isEditable.value = idx;
@@ -472,12 +501,16 @@ export default {
       deleteTopicId.value = id;
     }
 
-    function onDeleteTopicConfirm() {
-      $store.dispatch("courses/deleteTopic", {
-        id: deleteTopicId.value,
-        courseId: id,
-      });
+    async function onDeleteTopicConfirm() {
+      // $store.dispatch("courses/deleteTopic", {
+      //   id: deleteTopicId.value,
+      //   courseId: id,
+      // });
+      courseService.deleteTopic(deleteTopicId.value);
       deleteTopicDialogVisibility.value = false;
+      await courseService.getTopics().then((res) => {
+        $store.dispatch("courses/getTopics", res);
+      });
     }
 
     function onEditTopic(topicData: any) {

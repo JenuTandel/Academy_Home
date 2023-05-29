@@ -99,6 +99,7 @@ import { useStore } from "vuex";
 import courseForm from "../../components/courses/CourseForm.vue";
 import courseItems from "../../components/courses/CourseItems.vue";
 import { useRouter } from "vue-router";
+import courseService from "./services/courses.services";
 export default {
   components: { courseForm, courseItems },
   setup() {
@@ -112,6 +113,11 @@ export default {
     const patchData = reactive({ course: "" });
     const searchInput = ref();
     const courses = ref();
+
+    // $store.dispatch("courses/getCourses");
+    courseService.getCourses().then((res) => {
+      $store.dispatch("courses/getCourses", res.data);
+    });
 
     const allCourses = computed(() => {
       return $store.getters["courses/Courses"];
@@ -153,7 +159,8 @@ export default {
       deleteId.value = id;
     }
     async function onDeleteConfirm() {
-      await $store.dispatch("courses/deleteCourse", deleteId.value);
+      await courseService.deleteCourse(deleteId.value);
+      // await $store.dispatch("courses/deleteCourse", deleteId.value);
       const index = allCourses.value.findIndex(
         (res: any) => res.id == deleteId.value
       );
@@ -166,7 +173,16 @@ export default {
 
     async function onEdit(id: any) {
       updateId.value = id;
-      await $store.dispatch("courses/getCourseById", id);
+      // await $store.dispatch("courses/getCourseById", id);
+      await courseService
+        .getCourseById(updateId.value)
+        .then((res) => {
+          $store.dispatch("courses/getCourseById", res);
+          // $store.commit("courses/isLoading", false);
+        })
+        .catch((err) => {
+          $store.commit("courses/isLoading", false);
+        });
       patchData.course = $store.getters["courses/Course"];
       dialogVisibility.value = true;
       isEdit.value = true;
@@ -183,7 +199,6 @@ export default {
       dialogVisibility.value = !y;
     }
 
-    $store.dispatch("courses/getCourses");
     return {
       onAddCourse,
       closeDialog,
