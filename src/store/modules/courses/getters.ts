@@ -11,7 +11,4 @@ export default {
   Topics(state: any) {
     return state.topics;
   },
-  isLoading(state: any) {
-    return state.isLoading;
-  },
 };

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 import HomeView from "@/pages/HomeView.vue";
 import AboutView from "@/pages/AboutView.vue";
-import ContactView from "@/pages/ContactView.vue";
+import ContactView from "@/pages/contact/ContactView.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
 // import CourseForm from "@/components/courses/CourseForm.vue";
 import CourseDetails from "@/pages/courses/CourseDetails.vue";

@@ -297,7 +297,7 @@ import LearningPointsForm from "@/components/courses/LearningPointsForm.vue";
 import CourseTopic from "@/components/courses/CourseTopic.vue";
 import TopicPreview from "@/components/courses/TopicPreview.vue";
 import courseService from "./services/courses.services";
-import { string } from "yup";
+import authService from "../auth/services/auth.services";
 
 export default {
   components: { LearningPointsForm, CourseTopic, TopicPreview },
@@ -380,7 +380,10 @@ export default {
       learningPointsDialogVisibility.value = true;
     }
     async function getDetails() {
-      await $store.dispatch("getUserById", $route.params.id);
+      // await $store.dispatch("getUserById", $route.params.id);
+      await authService.getUserById().then((res) => {
+        $store.dispatch("getUserById", { courseId: id, res: res });
+      });
       // await $store.dispatch("courses/getCourseById", $route.params.id);
       await courseService.getCourseById(id).then((res) => {
         $store.dispatch("courses/getCourseById", res);
@@ -463,11 +466,18 @@ export default {
       }
     }
 
-    function onEnroll() {
+    async function onEnroll() {
       if (!userLoggedIn.value) {
         $router.replace("/login");
       } else if (enrollButtonText.value == "Enroll Now") {
-        $store.dispatch("updateUser", { id: id, enrolled: "Go to the Course" });
+        // $store.dispatch("updateUser", { id: id, enrolled: "Go to the Course" });
+        await authService.updateUser({
+          enrolledText: "Go to the Course",
+          courseId: id,
+        });
+        await courseService.getCourseById(id).then((res) => {
+          $store.dispatch("courses/getCourseById", res);
+        });
       } else {
         $router.push(`/courses/${id}/${details.course.courseName}`);
       }
@@ -482,11 +492,9 @@ export default {
       //   deleteId: deleteSectionId.value,
       //   courseId: id,
       // });
-      await courseService
-        .deleteContentTitle(deleteSectionId.value)
-        .then((res) => {
-          deleteDialogVisibility.value = false;
-        });
+      await courseService.deleteContentTitle(deleteSectionId.value).then(() => {
+        deleteDialogVisibility.value = false;
+      });
       await courseService.getContentTitle().then((res) => {
         $store.dispatch("courses/getContentTitle", { id: id, res: res });
       });
@@ -526,10 +534,11 @@ export default {
 
     async function onDeleteLearningPointConfirm() {
       details.course.learningPoints.splice(learningPointIndex.value, 1);
-      await $store.dispatch("courses/addLearningPoints", {
-        id: id,
-        learningPoint: details.course.learningPoints,
-      });
+      await courseService.addLearningPoints(id, details.course.learningPoints);
+      // await $store.dispatch("courses/addLearningPoints", {
+      //   id: id,
+      //   learningPoint: details.course.learningPoints,
+      // });
       deleteLearningPointDialogVisibility.value = false;
     }
 

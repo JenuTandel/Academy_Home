@@ -44,12 +44,14 @@ export default {
     const data = ref([] as any);
 
     // $store.dispatch("courses/getCourseById", id.value);
+    courseService.getCourseById(id.value).then((res) => {
+      $store.dispatch("courses/getCourseById", res);
+    });
     const courseData = computed(() => {
       return $store.getters["courses/Course"];
     });
     watch(courseData, () => {
       data.value = courseData.value.learningPoints;
-      console.log(data.value);
     });
 
     function addLearningPoint() {
@@ -58,7 +60,7 @@ export default {
     function removeLearningPoint(deleteIndex: any) {
       learningPoint.value.splice(deleteIndex, 1);
     }
-    function onSubmit() {
+    async function onSubmit() {
       if (data.value) {
         learningPoint.value.forEach((element) => {
           data.value.push(element);
@@ -67,11 +69,14 @@ export default {
         data.value = learningPoint.value;
       }
 
-      courseService.addLearningPoints(id.value, data.value);
+      await courseService.addLearningPoints(id.value, data.value);
       // $store.dispatch("courses/addLearningPoints", {
       //   id: id.value,
       //   learningPoint: data.value,
       // });
+      courseService.getCourseById(id.value).then((res) => {
+        $store.dispatch("courses/getCourseById", res);
+      });
       context.emit("close", true);
     }
     return { addLearningPoint, removeLearningPoint, learningPoint, onSubmit };

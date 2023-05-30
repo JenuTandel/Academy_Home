@@ -1,33 +1,35 @@
 export class RegistrationData {
-  id: number;
-  firstname: string;
-  lastname: string;
-  emailId: string;
-  password: string;
-  country: string;
-  state: string;
-  city: string;
-  fullname: string;
-  phoneno: number;
-  skills: Skills[];
+  id?: number;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  fullname?: string;
+  phoneno?: number;
+  skills?: string;
+  enrolledCourses?: EnrolledCourse[];
 
   constructor(
     id: number,
     firstname: string,
     lastname: string,
-    emailId: string,
+    email: string,
     password: string,
     country: string,
     state: string,
     city: string,
     fullname: string,
     phoneno: number,
-    skills: Skills[]
+    skills: string,
+    enrolledCourses?: EnrolledCourse[]
   ) {
     this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
-    this.emailId = emailId;
+    this.email = email;
     this.password = password;
     this.country = country;
     this.state = state;
@@ -35,12 +37,16 @@ export class RegistrationData {
     this.fullname = fullname;
     this.phoneno = phoneno;
     this.skills = skills;
+    this.enrolledCourses = enrolledCourses;
   }
 }
 
-export class Skills {
-  skill: string;
-  constructor(skill: string) {
-    this.skill = skill;
+export class EnrolledCourse {
+  courseId?: string;
+  enrolledText?: string;
+
+  constructor(courseId: string, enrolledText: string) {
+    this.courseId = courseId;
+    this.enrolledText = enrolledText;
   }
 }

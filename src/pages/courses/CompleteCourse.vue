@@ -121,13 +121,15 @@ import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { reactive, ref, computed, watch, onMounted } from "vue";
 import TopicPreview from "@/components/courses/TopicPreview.vue";
+import courseService from "./services/courses.services";
+import authService from "../auth/services/auth.services";
 
 export default {
   components: { TopicPreview },
   setup() {
     const $route = useRoute();
     const $store = useStore();
-    const id = $route.params.id;
+    const id = $route.params.id.toString();
 
     const details = reactive({} as any);
     const title = ref();
@@ -140,7 +142,7 @@ export default {
     const isSidebar = ref(true);
     const isOpenButton = ref(false);
     const clickonTopic = ref();
-    const section = ref(null);
+    // const section = ref(null);
 
     const contentTitles = computed(() => {
       return $store.getters["courses/ContentTitles"];
@@ -183,12 +185,24 @@ export default {
 
     getDetails();
     async function getDetails() {
-      await $store.dispatch("getUserById", $route.params.id);
-      await $store.dispatch("courses/getCourseById", $route.params.id);
-      await $store.dispatch("courses/getContentTitle", {
-        id: id,
+      // await $store.dispatch("getUserById", $route.params.id);
+      // await $store.dispatch("courses/getCourseById", $route.params.id);
+      // await $store.dispatch("courses/getContentTitle", {
+      //   id: id,
+      // });
+      // await $store.dispatch("courses/getTopics");
+      authService.getUserById().then((res) => {
+        $store.dispatch("getUserById", { courseId: id, res: res });
       });
-      await $store.dispatch("courses/getTopics");
+      await courseService.getCourseById(id).then((res) => {
+        $store.dispatch("courses/getCourseById", res);
+      });
+      await courseService.getContentTitle().then((res) => {
+        $store.dispatch("courses/getContentTitle", { id: id, res: res });
+      });
+      await courseService.getTopics().then((res) => {
+        $store.dispatch("courses/getTopics", res);
+      });
     }
     async function getCall(get: any) {
       if (get) {

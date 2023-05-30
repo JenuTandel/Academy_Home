@@ -1,5 +1,5 @@
-import axios from "axios";
-const baseUrl = process.env.VUE_APP_BASE_URL;
+// import axios from "axios";
+// const baseUrl = process.env.VUE_APP_BASE_URL;
 
 export default {
   // async addCourse(context: any, payload: any) {
@@ -18,7 +18,7 @@ export default {
   // },
   async getCourses(context: any, payload: any) {
     const res = payload;
-    context.commit("isLoading", true);
+    // context.commit("isLoading", true);
     // await axios
     //   .get(`${baseUrl}courses.json`)
     //   .then((res) => {
@@ -38,7 +38,7 @@ export default {
       };
       courses.push(course);
     }
-    context.commit("isLoading", false);
+    // context.commit("isLoading", false);
     context.commit("getCoursesData", courses);
     // })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,7 +53,7 @@ export default {
   //   });
   // },
   async getCourseById(context: any, payload: any) {
-    context.commit("isLoading", true);
+    // context.commit("isLoading", true);
     const res = payload;
     // const id = payload;
     // await axios
@@ -64,7 +64,7 @@ export default {
       courseImage: res.data.courseImage._value,
       learningPoints: res.data?.learningPoints,
     });
-    context.commit("isLoading", false);
+    // context.commit("isLoading", false);
     // })
     // .catch(() => {
     //   context.commit("isLoading", false);
@@ -194,17 +194,17 @@ export default {
   //   });
   // },
 
-  async editTopic(context: any, payload: any) {
-    const id = payload.id;
-    const topicId = payload.topicId;
-    console.log("Edit");
-    await axios
-      .put(`${baseUrl}Topics/${topicId}.json`, {
-        contentId: id,
-        topic: payload.topic,
-      })
-      .then(() => {
-        // console.log(res);
-      });
-  },
+  // async editTopic(context: any, payload: any) {
+  //   const id = payload.id;
+  //   const topicId = payload.topicId;
+  //   console.log("Edit");
+  //   await axios
+  //     .put(`${baseUrl}Topics/${topicId}.json`, {
+  //       contentId: id,
+  //       topic: payload.topic,
+  //     })
+  //     .then(() => {
+  //       // console.log(res);
+  //     });
+  // },
 };

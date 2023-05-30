@@ -11,7 +11,4 @@ export default {
   getContentTopics(state: any, payload: any) {
     state.topics = payload;
   },
-  isLoading(state: any, payload: any) {
-    state.isLoading = payload;
-  },
 };

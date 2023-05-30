@@ -190,6 +190,8 @@ import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { ref, computed } from "vue";
+import locationService from "@/services/location.services";
+import authService from "./services/auth.services";
 
 export default {
   components: {
@@ -201,8 +203,6 @@ export default {
     const $store = useStore();
     const $router = useRouter();
     const error = ref(null);
-    $store.dispatch("location/country");
-
     // Form validations
     const schema = yup.object({
       firstname: yup
@@ -231,29 +231,45 @@ export default {
       city: yup.string(),
     });
 
+    // $store.dispatch("location/country");
+    locationService.getCountry().then((res) => {
+      $store.commit("location/setCountry", res.data);
+    });
+
     async function onRegistration(data: any, { resetForm }: any) {
       // const a = countryData.value.find((res: any) => (res.id = data.country));
       // console.log(a.name);
+      const userData = {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email,
+        password: data.password,
+        countryId: data.country,
+        stateId: data.state,
+        cityId: data.city,
+        phoneno: data.phoneno,
+        skills: data.skills,
+        joiningDate: `${new Date().getDate()}/ ${new Date().getMonth()}/ ${new Date().getFullYear()}`,
+      };
 
       try {
-        await $store.dispatch("signup", {
+        // await $store.dispatch("signup", {
+        //   email: data.email,
+        //   password: data.password,
+        // }),
+        // await $store.dispatch("registration", userData);
+        await authService.signup({
           email: data.email,
           password: data.password,
-        }),
-          await $store.dispatch("registration", {
-            firstname: data.firstname,
-            lastname: data.lastname,
-            email: data.email,
-            password: data.password,
-            countryId: data.country,
-            stateId: data.state,
-            cityId: data.city,
-            phoneno: data.phoneno,
-            skills: data.skills,
-            joiningDate: `${new Date().getDate()}/ ${new Date().getMonth()}/ ${new Date().getFullYear()}`,
-          });
+        });
+        // .then((res) => {
+        //   $store.dispatch("signup", res);
+        // });
+        // const userId = await $store.getters["userId"];
+        await authService.registration(userData);
       } catch (err: any) {
         error.value = err.response.data.error.message;
+        $store.commit("isLoading", false);
       }
       if (!error.value) {
         resetForm();
@@ -274,7 +290,10 @@ export default {
     //To get all states according to country
     function onCountrySelect(event: any) {
       const countryId = event.target.value;
-      $store.dispatch("location/state", countryId);
+      // $store.dispatch("location/state", countryId);
+      locationService.getStates().then((res) => {
+        $store.dispatch("location/state", { countryId: countryId, res: res });
+      });
     }
     const statesData = computed(() => {
       return $store.getters["location/getStates"];
@@ -283,7 +302,10 @@ export default {
     //To get all cities according to states
     function onSelectState(event: any) {
       const stateId = event.target.value;
-      $store.dispatch("location/city", stateId);
+      // $store.dispatch("location/city", stateId);
+      locationService.getCities().then((res) => {
+        $store.dispatch("location/city", { stateId: stateId, res: res });
+      });
     }
     const citiesData = computed(() => {
       return $store.getters["location/getCities"];

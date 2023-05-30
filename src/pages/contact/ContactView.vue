@@ -42,7 +42,7 @@
   </section>
   <section v-else class="d-flex flex-column h-100" id="contact-us">
     <div class="image-wrapper">
-      <img src="../assets/images/contact.jpg" />
+      <img src="../../assets/images/contact.jpg" />
     </div>
     <!-- start: contact form -->
     <div
@@ -128,7 +128,9 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { useStore } from "vuex";
 import { computed } from "vue";
-import months from "../services/months";
+import months from "../../services/months";
+import contactServie from "./services/contact.services";
+
 export default {
   components: {
     Form,
@@ -141,7 +143,10 @@ export default {
     const isAdmin = computed(() => {
       return localStorage.getItem("role");
     });
-    $store.dispatch("contact/getQueries");
+    // $store.dispatch("contact/getQueries");
+    contactServie.getQueries().then((res) => {
+      $store.dispatch("contact/getQueries", res);
+    });
     const contacts = computed(() => {
       return $store.getters["contact/getContacts"];
     });
@@ -161,7 +166,7 @@ export default {
     });
 
     function onSubmit(data: any, { resetForm }: any) {
-      $store.dispatch("contact/addQuery", {
+      const contactData = {
         name: data.name,
         email: data.email,
         message: data.message,
@@ -169,7 +174,9 @@ export default {
           months[new Date().getMonth()]
         }  ${new Date().getFullYear()}`,
         time: new Date().toLocaleTimeString(),
-      });
+      };
+      // $store.dispatch("contact/addQuery", contactData);
+      contactServie.addQuery(contactData);
       resetForm();
     }
     return { schema, onSubmit, isAdmin, contacts };

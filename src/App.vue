@@ -59,7 +59,7 @@ export default {
     });
 
     const isSpinner = computed(() => {
-      return $store.getters["courses/isLoading"];
+      return $store.getters["isLoading"];
     });
     watch(isSpinner, () => {
       isLoading.value = isSpinner.value;

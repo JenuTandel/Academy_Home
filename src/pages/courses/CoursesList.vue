@@ -180,7 +180,7 @@ export default {
           $store.dispatch("courses/getCourseById", res);
           // $store.commit("courses/isLoading", false);
         })
-        .catch((err) => {
+        .catch(() => {
           $store.commit("courses/isLoading", false);
         });
       patchData.course = $store.getters["courses/Course"];

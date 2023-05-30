@@ -90,6 +90,8 @@ import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { ErrorMessage, Field, Form } from "vee-validate";
 import { ref } from "vue";
+import authService from "./services/auth.services";
+
 export default {
   components: { ErrorMessage, Field, Form },
   setup() {
@@ -111,14 +113,25 @@ export default {
       if (data.email == "admin@1rivet.com" && data.password == "Admin@123") {
         localStorage.setItem("role", "admin");
       }
-      try {
-        await $store.dispatch("login", {
-          email: data.email,
-          password: data.password,
+      // try {
+      // await $store.dispatch("login", {
+      //   email: data.email,
+      //   password: data.password,
+      // });
+
+      await authService
+        .login({ email: data.email, password: data.password })
+        .then((res) => {
+          $store.dispatch("login", res);
+        })
+        .catch((err) => {
+          $store.commit("isLogin", false);
+          $store.commit("isLoading", false);
+          error.value = err.response.data.error.message;
         });
-      } catch (err: any) {
-        error.value = err.response.data.error.message;
-      }
+      // } catch (err: any) {
+      //   error.value = err.response.data.error.message;
+      // }
       if (!error.value) {
         $router.push("/home");
       }

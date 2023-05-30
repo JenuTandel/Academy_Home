@@ -8,9 +8,18 @@ export default createStore({
   state: {
     toaster: {},
     sidebarOpen: false,
+    isLoading: false,
   },
-  getters: {},
-  mutations: {},
+  mutations: {
+    isLoading(state: any, payload: any) {
+      state.isLoading = payload;
+    },
+  },
+  getters: {
+    isLoading(state: any) {
+      return state.isLoading;
+    },
+  },
   actions: {},
   modules: {
     authModule,

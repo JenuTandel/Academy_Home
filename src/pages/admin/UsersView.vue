@@ -63,6 +63,7 @@
 <script lang="ts">
 import { useStore } from "vuex";
 import { computed, ref, watch } from "vue";
+import authService from "../auth/services/auth.services";
 export default {
   setup() {
     const $store = useStore();
@@ -70,7 +71,10 @@ export default {
     const deleteDialogVisibility = ref(false);
     const searchInput = ref();
     const users = ref();
-    $store.dispatch("getUsers");
+    // $store.dispatch("getUsers");
+    authService.getUsers().then((res) => {
+      $store.dispatch("getUsers", res);
+    });
     const usersData = computed(() => {
       return $store.getters["getUsers"];
     });
@@ -97,8 +101,9 @@ export default {
       deletedId.value = id;
       deleteDialogVisibility.value = true;
     }
-    function onDeleteConfirm() {
-      $store.dispatch("removeUser", deletedId.value);
+    async function onDeleteConfirm() {
+      // $store.dispatch("removeUser", deletedId.value);
+      await authService.removeUser(deletedId.value);
       const index = usersData.value.findIndex(
         (res: any) => res.id == deletedId.value
       );

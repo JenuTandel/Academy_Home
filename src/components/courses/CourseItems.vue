@@ -60,6 +60,7 @@
 </template>
 
 <script lang="ts">
+import authService from "@/pages/auth/services/auth.services";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -73,9 +74,11 @@ export default {
     const activeId = ref("");
 
     async function onCard(id: any, title: any) {
-      await $store.dispatch("getUserById", id);
+      // await $store.dispatch("getUserById", id);
+      await authService.getUserById().then((res) => {
+        $store.dispatch("getUserById", { courseId: id, res: res });
+      });
       const d = await $store.getters["getEnrollText"];
-      console.log(d);
 
       if (d == "Go to the Course") {
         $router.push(`/courses/${id}/${title}`);
@@ -85,8 +88,6 @@ export default {
     }
 
     function startMonitoring(id: any) {
-      console.log("enter");
-
       // setTimeout(() => {
       activeId.value = id;
       // }, 500);
@@ -137,9 +138,9 @@ dialog {
   width: 250px;
   padding: 20px;
   background-color: white;
-  &:hover {
-    display: none;
-  }
+  // &:hover {
+  //   display: none;
+  // }
 }
 .tooltip-position-left {
   position: absolute;
