@@ -96,6 +96,7 @@ export default {
       );
       users.value = data;
     });
+
     // watch(searchInput, () => {
     //   const searchValue = searchInput.value.toLowerCase();
     //   if (!searchInput.value) {

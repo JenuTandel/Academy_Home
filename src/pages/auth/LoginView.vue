@@ -132,10 +132,10 @@ export default {
           }
         });
       // .catch((err) => {
-      //   // $store.commit("isLogin", false);
-      //   // $store.commit("isLoading", false);
-      //   // error.value = err.response.data.error.message;
-      //   error.value = err;
+      //   $store.commit("isLogin", false);
+      //   $store.commit("isLoading", false);
+      //   error.value = err.response.data.error.message;
+      //   //error.value = err;
       // });
       // } catch (err: any) {
       //   error.value = err.response.data.error.message;

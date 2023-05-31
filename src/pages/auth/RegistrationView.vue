@@ -193,7 +193,6 @@ import { ref, computed } from "vue";
 import locationService from "@/services/location.services";
 import authService from "./services/auth.services";
 import { RegistrationData } from "./model/registration.model";
-import { AxiosResponse } from "axios";
 
 export default {
   components: {
