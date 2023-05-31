@@ -13,22 +13,22 @@ export default {
   //       throw err;
   //     });
   // },
-  async signup(context: any, payload: any) {
-    const res = payload;
-    // const data = payload;
-    // await axios
-    //   .post(
-    //     "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBDWp5tagLwUNX3kUOpPO2cCZh0VV00s",
-    //     { ...data, returnSecureToken: true }
-    //   )
-    //   .then((res) => {
-    // context.commit("userId", res.data.localId);
+  // async signup(context: any, payload: any) {
+  // const res = payload;
+  // const data = payload;
+  // await axios
+  //   .post(
+  //     "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBDWp5tagLwUNX3kUOpPO2cCZh0VV00s",
+  //     { ...data, returnSecureToken: true }
+  //   )
+  //   .then((res) => {
+  // context.commit("userId", res.data.localId);
 
-    // })
-    // .catch((err) => {
-    //   throw err;
-    // });
-  },
+  // })
+  // .catch((err) => {
+  //   throw err;
+  // });
+  // },
   async login(context: any, payload: any) {
     const res = payload;
     // const data = payload;

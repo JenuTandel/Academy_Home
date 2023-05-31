@@ -21,4 +21,9 @@ export default {
   enrollButtonData(state: any, payload: any) {
     state.enrollText = payload;
   },
+  networkError(state: any, payload: any) {
+    console.log(payload);
+
+    state.networkError = payload;
+  },
 };

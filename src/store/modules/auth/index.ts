@@ -11,6 +11,7 @@ export default {
       users: [],
       toaster: {},
       enrollText: "",
+      networkError: "",
     };
   },
   mutations,

@@ -12,18 +12,17 @@ class AuthService {
 
   //Signup with firebase authentication
   signup(data: RegistrationData) {
-    return http
-      .post(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBDWp5tagLwUNX3kUOpPO2cCZh0VV00s",
-        { ...data, returnSecureToken: true }
-      )
-      .then((res) => {
-        store.commit("userId", res.data.localId);
-        store.commit("getToasterData", {
-          message: "Registered Successfully",
-          type: "success",
-        });
-      });
+    return http.post(
+      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBDWp5tagLwUNX3kUOpPO2cCZh0VV00s",
+      { ...data, returnSecureToken: true }
+    );
+    // .then((res) => {
+    //   store.commit("userId", res.data.localId);
+    //   store.commit("getToasterData", {
+    //     message: "Registered Successfully",
+    //     type: "success",
+    //   });
+    // })
   }
 
   //login with firebase authentication

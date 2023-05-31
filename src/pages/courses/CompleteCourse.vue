@@ -14,6 +14,7 @@
       <span class="icon-arrow-right text-white"></span>
     </button>
     <div class="row gx-0 h-100 justify-content-center">
+      <!-- start: sidebar -->
       <div class="col-12 col-md-4 order-1 order-md-0" v-if="isSidebar">
         <aside class="sidebar h-100 border-end py-3 pe-2">
           <div
@@ -80,6 +81,7 @@
           <!-- end: accordian -->
         </aside>
       </div>
+      <!-- end: sidebar -->
       <div class="col-12 col-md-8 p-2 order-0 order-md-1">
         <topic-preview
           :topic="topic"
@@ -130,7 +132,6 @@ export default {
     const $route = useRoute();
     const $store = useStore();
     const id = $route.params.id.toString();
-
     const details = reactive({} as any);
     const title = ref();
     const titleId = ref();
@@ -184,6 +185,7 @@ export default {
     );
 
     getDetails();
+    //call services on first setup
     async function getDetails() {
       // await $store.dispatch("getUserById", $route.params.id);
       // await $store.dispatch("courses/getCourseById", $route.params.id);
@@ -204,12 +206,13 @@ export default {
         $store.dispatch("courses/getTopics", res);
       });
     }
-    async function getCall(get: any) {
-      if (get) {
-        await getDetails();
-      }
-    }
+    // async function getCall(get: any) {
+    //   if (get) {
+    //     await getDetails();
+    //   }
+    // }
 
+    //watch topic video
     function onTopic(topicData: any, contentTitle: any) {
       topic.value = topicData;
       topicContentTitle.value = contentTitle;
@@ -218,11 +221,13 @@ export default {
       mainElement?.scroll(0, 0);
     }
 
+    //sidebar open
     function isSidebarButton() {
       isSidebar.value = true;
       isOpenButton.value = false;
     }
 
+    //sidebar close
     function onSidebarClose() {
       isSidebar.value = false;
       isOpenButton.value = true;
@@ -230,7 +235,6 @@ export default {
 
     return {
       details,
-      getCall,
       title,
       data,
       titleId,

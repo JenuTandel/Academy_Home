@@ -6,7 +6,7 @@ export class CourseData {
   courseDate: string;
   timeDuration: number;
   courseImage: CourseImage;
-  // learningPoints: LearningPoint[];
+  learningPoints?: LearningPoint[];
 
   constructor(
     id: string,
@@ -15,8 +15,8 @@ export class CourseData {
     courseDetails: string,
     courseDate: string,
     timeDuration: number,
-    courseImage: CourseImage
-    // learningPoints: LearningPoint[]
+    courseImage: CourseImage,
+    learningPoints?: LearningPoint[]
   ) {
     this.id = id;
     this.authorName = authorName;
@@ -25,7 +25,7 @@ export class CourseData {
     this.courseDate = courseDate;
     this.timeDuration = timeDuration;
     this.courseImage = courseImage;
-    // this.learningPoints = learningPoints;
+    this.learningPoints = learningPoints;
   }
 }
 

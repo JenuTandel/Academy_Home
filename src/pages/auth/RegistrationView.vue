@@ -236,6 +236,7 @@ export default {
       $store.commit("location/setCountry", res.data);
     });
 
+    //submit button functionality
     async function onRegistration(data: any, { resetForm }: any) {
       // const a = countryData.value.find((res: any) => (res.id = data.country));
       // console.log(a.name);
@@ -258,17 +259,29 @@ export default {
         //   password: data.password,
         // }),
         // await $store.dispatch("registration", userData);
-        await authService.signup({
-          email: data.email,
-          password: data.password,
-        });
+        await authService
+          .signup({
+            email: data.email,
+            password: data.password,
+          })
+          .then((res) => {
+            if (res.data.error) {
+              error.value = res.data.error.message;
+            } else {
+              $store.commit("userId", res.data.localId);
+              $store.commit("getToasterData", {
+                message: "Registered Successfully",
+                type: "success",
+              });
+            }
+          });
         // .then((res) => {
         //   $store.dispatch("signup", res);
         // });
         // const userId = await $store.getters["userId"];
         await authService.registration(userData);
       } catch (err: any) {
-        error.value = err.response.data.error.message;
+        // error.value = err.response.data.error.message;
         $store.commit("isLoading", false);
       }
       if (!error.value) {

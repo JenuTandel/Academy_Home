@@ -54,12 +54,17 @@ export default {
       data.value = courseData.value.learningPoints;
     });
 
+    //add input for learning point
     function addLearningPoint() {
       learningPoint.value.push({ value: "" });
     }
+
+    //remove input
     function removeLearningPoint(deleteIndex: any) {
       learningPoint.value.splice(deleteIndex, 1);
     }
+
+    //add learning point/s
     async function onSubmit() {
       if (data.value) {
         learningPoint.value.forEach((element) => {

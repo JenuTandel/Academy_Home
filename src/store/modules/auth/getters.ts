@@ -17,4 +17,8 @@ export default {
   getEnrollText(state: any) {
     return state.enrollText;
   },
+  getNetworkError(state: any) {
+    console.log(state.networkError);
+    return state.networkError;
+  },
 };

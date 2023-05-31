@@ -135,6 +135,8 @@ export default {
       authorName: yup.string().required(),
       courseImage: yup.string(),
     });
+
+    //add course data
     async function onSubmit(data: any) {
       if (updateId.value) {
         const course = {
@@ -185,9 +187,13 @@ export default {
         $store.dispatch("courses/getCourses", res.data);
       });
     }
+
+    //close the courseForm dialog
     function onCancel() {
       context.emit("closeDialog", true);
     }
+
+    //image upload and get url
     function handleFileUpload(event: any) {
       if (event) {
         uploadingImage.value = "uploading....";

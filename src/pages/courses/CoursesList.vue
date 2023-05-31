@@ -13,7 +13,7 @@
         <button class="btn btn-success me-3" @click="onDeleteConfirm">
           Ok
         </button>
-        <button class="btn btn-dark" @click="onDeleteCancel">Cancel</button>
+        <button class="btn btn-dark" @click="closeDialog">Cancel</button>
       </template>
     </base-dialog>
     <base-dialog :show="dialogVisibility" title="Error" @close="closeDialog">
@@ -167,10 +167,8 @@ export default {
       allCourses.value.splice(index, 1);
       deleteDialogVisibility.value = false;
     }
-    function onDeleteCancel() {
-      deleteDialogVisibility.value = false;
-    }
 
+    //update course details
     async function onEdit(id: any) {
       updateId.value = id;
       // await $store.dispatch("courses/getCourseById", id);
@@ -188,13 +186,18 @@ export default {
       isEdit.value = true;
     }
 
+    //open page for course details
     function onDetails(course: any) {
       $router.push(`/courses/details/${course.id}`);
     }
+
+    //close dialog
     function closeDialog() {
       dialogVisibility.value = false;
       deleteDialogVisibility.value = false;
     }
+
+    //close form
     function closeForm(y: boolean) {
       dialogVisibility.value = !y;
     }
@@ -205,7 +208,6 @@ export default {
       dialogVisibility,
       deleteDialogVisibility,
       onDeleteConfirm,
-      onDeleteCancel,
       closeForm,
       allCourses,
       onDelete,

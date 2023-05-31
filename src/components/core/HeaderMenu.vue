@@ -23,7 +23,7 @@
   <li class="nav-item" @click="onNavItem" v-if="!visibleLogout">
     <router-link to="/registration" class="nav-link">Registration</router-link>
   </li>
-  <li class="nav-item" v-if="visibleLogout" @click="onLogout">
+  <li class="nav-item cursor-pointer" v-if="visibleLogout" @click="onLogout">
     <a class="nav-link">Logout</a>
   </li>
 </template>

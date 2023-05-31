@@ -1,6 +1,13 @@
 <template>
   <section class="h-100 w-100 d-flex flex-column">
     <base-spinner v-if="isLoading"></base-spinner>
+    <base-dialog :show="!!apierror" title="Error" @close="handleError">
+      <template #header></template>
+      <template #default>
+        <p>{{ apierror }}</p>
+      </template>
+      <template #action></template>
+    </base-dialog>
     <!-- start: toaster -->
     <transition name="toaster">
       <toaster-message
@@ -53,6 +60,16 @@ export default {
     const $store = useStore();
     const isLoading = ref(false);
     const toasterData = ref();
+    const apierror = ref();
+
+    const networkError = computed(() => {
+      return $store.getters["getNetworkError"];
+    });
+
+    watch(networkError, () => {
+      apierror.value = networkError.value;
+      console.log(apierror.value);
+    });
 
     const navLinkClick = computed(() => {
       return $store.state.sidebarOpen;
@@ -79,7 +96,18 @@ export default {
     function onClose() {
       $store.state.sidebarOpen = false;
     }
-    return { isLoading, toasterData, toaster, onClose, navLinkClick };
+    function handleError() {
+      apierror.value = null;
+    }
+    return {
+      isLoading,
+      toasterData,
+      toaster,
+      onClose,
+      navLinkClick,
+      apierror,
+      handleError,
+    };
   },
 };
 </script>

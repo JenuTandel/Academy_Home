@@ -136,6 +136,7 @@
         </div>
       </div>
     </div>
+    <!--start: learning points section  -->
     <div class="border rounded-2 p-3 m-5">
       <div class="d-flex justify-content-between">
         <h3 class="mb-3">What you'll learn</h3>
@@ -160,6 +161,7 @@
         </p>
       </div>
     </div>
+    <!--end: learning points section  -->
     <div class="d-flex justify-content-between mx-5">
       <h3>Course Content</h3>
       <button
@@ -208,7 +210,6 @@
                   <button type="submit" class="btn btn-primary ms-2">
                     Save
                   </button>
-                  <!-- v-if="data[index].contentTitle" -->
                 </form>
                 <div class="d-flex" v-if="isEditable !== index">
                   <p>
@@ -306,7 +307,6 @@ export default {
     const $router = useRouter();
     const $store = useStore();
     const id = $route.params.id.toString();
-
     const details = reactive({} as any);
     const title = ref();
     const learningPointsDialogVisibility = ref(false);
@@ -341,6 +341,7 @@ export default {
     const computedDetails = computed(() => {
       return $store.getters["courses/Course"];
     });
+
     watch(
       computedDetails,
       () => {
@@ -376,9 +377,12 @@ export default {
     }
 
     getDetails();
+
     function addDetails() {
       learningPointsDialogVisibility.value = true;
     }
+
+    //call services on first setup
     async function getDetails() {
       // await $store.dispatch("getUserById", $route.params.id);
       await authService.getUserById().then((res) => {
@@ -399,6 +403,8 @@ export default {
         $store.dispatch("courses/getTopics", res);
       });
     }
+
+    //Close dialog
     function closeDialog() {
       learningPointsDialogVisibility.value = false;
       contentDialogVisibility.value = false;
@@ -413,6 +419,7 @@ export default {
       }
     }
 
+    //add and save content title
     async function onSaveTitle(index: any) {
       if (data.value[index].contentTitle) {
         await courseService.editContentTitle(
@@ -442,12 +449,14 @@ export default {
       // });
     }
 
+    //Add topics
     function addContent(id: any) {
       titleId.value = id;
       contentDialogVisibility.value = true;
       buttonName.value = "Add";
     }
 
+    //click on topic, open topic preview dialog
     function onTopic(topicData: any, index: any, contentTitle: any) {
       if (!isAdmin.value) {
         if (!userLoggedIn.value) {
@@ -466,6 +475,7 @@ export default {
       }
     }
 
+    //enroll now button functionality
     async function onEnroll() {
       if (!userLoggedIn.value) {
         $router.replace("/login");
@@ -475,18 +485,22 @@ export default {
           enrolledText: "Go to the Course",
           courseId: id,
         });
-        await courseService.getCourseById(id).then((res) => {
-          $store.dispatch("courses/getCourseById", res);
+        await authService.getUserById().then((res) => {
+          console.log(res);
+          $store.dispatch("getUserById", { courseId: id, res: res });
         });
       } else {
         $router.push(`/courses/${id}/${details.course.courseName}`);
       }
     }
 
+    //section id for delete
     function onDeleteSection(id: any) {
       deleteDialogVisibility.value = true;
       deleteSectionId.value = id;
     }
+
+    //remove content section
     async function onDeleteConfirm() {
       // $store.dispatch("courses/deleteContentTitle", {
       //   deleteId: deleteSectionId.value,
@@ -499,16 +513,20 @@ export default {
         $store.dispatch("courses/getContentTitle", { id: id, res: res });
       });
     }
+
+    //update content title
     function onEditTitle(idx: number, title: any) {
       isEditable.value = idx;
       data.value[idx].value = title;
     }
 
+    //topic id for delete topic
     function onDeleteTopic(id: any) {
       deleteTopicDialogVisibility.value = true;
       deleteTopicId.value = id;
     }
 
+    //remove topic
     async function onDeleteTopicConfirm() {
       // $store.dispatch("courses/deleteTopic", {
       //   id: deleteTopicId.value,
@@ -521,17 +539,20 @@ export default {
       });
     }
 
+    //update topic
     function onEditTopic(topicData: any) {
       Editabletopic.value = topicData;
       contentDialogVisibility.value = true;
       buttonName.value = "Edit";
     }
 
+    //learning point index for delete
     function removeLearningPoint(index: any) {
       deleteLearningPointDialogVisibility.value = true;
       learningPointIndex.value = index;
     }
 
+    //remove learning points
     async function onDeleteLearningPointConfirm() {
       details.course.learningPoints.splice(learningPointIndex.value, 1);
       await courseService.addLearningPoints(id, details.course.learningPoints);

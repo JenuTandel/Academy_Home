@@ -109,6 +109,8 @@ export default {
         .matches(/^\S*$/, "No space required")
         .required(),
     });
+
+    //login button functionality
     async function onLogin(data: any) {
       if (data.email == "admin@1rivet.com" && data.password == "Admin@123") {
         localStorage.setItem("role", "admin");
@@ -122,13 +124,18 @@ export default {
       await authService
         .login({ email: data.email, password: data.password })
         .then((res) => {
-          $store.dispatch("login", res);
-        })
-        .catch((err) => {
-          $store.commit("isLogin", false);
-          $store.commit("isLoading", false);
-          error.value = err.response.data.error.message;
+          if (res.data.error) {
+            error.value = res.data.error.message;
+          } else {
+            $store.dispatch("login", res);
+          }
         });
+      // .catch((err) => {
+      //   // $store.commit("isLogin", false);
+      //   // $store.commit("isLoading", false);
+      //   // error.value = err.response.data.error.message;
+      //   error.value = err;
+      // });
       // } catch (err: any) {
       //   error.value = err.response.data.error.message;
       // }
