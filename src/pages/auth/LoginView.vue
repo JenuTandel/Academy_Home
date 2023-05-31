@@ -91,6 +91,7 @@ import * as yup from "yup";
 import { ErrorMessage, Field, Form } from "vee-validate";
 import { ref } from "vue";
 import authService from "./services/auth.services";
+import { RegistrationData } from "./model/registration.model";
 
 export default {
   components: { ErrorMessage, Field, Form },
@@ -111,7 +112,7 @@ export default {
     });
 
     //login button functionality
-    async function onLogin(data: any) {
+    async function onLogin(data: RegistrationData) {
       if (data.email == "admin@1rivet.com" && data.password == "Admin@123") {
         localStorage.setItem("role", "admin");
       }

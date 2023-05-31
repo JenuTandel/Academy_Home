@@ -100,6 +100,7 @@ import courseForm from "../../components/courses/CourseForm.vue";
 import courseItems from "../../components/courses/CourseItems.vue";
 import { useRouter } from "vue-router";
 import courseService from "./services/courses.services";
+import searchData from "@/hooks/search";
 export default {
   components: { courseForm, courseItems },
   setup() {
@@ -126,20 +127,33 @@ export default {
       courses.value = allCourses.value;
     });
 
+    //search hook
     watch(searchInput, () => {
       //for search
-      if (!searchInput.value) {
-        courses.value = allCourses.value;
-      } else {
-        const searchValue = searchInput.value.toLowerCase();
-        courses.value = allCourses.value.filter(
-          (res: any) =>
-            res.courseName.toLowerCase().includes(searchValue) ||
-            res.courseDetails.toLowerCase().includes(searchValue) ||
-            res.authorName.toLowerCase().includes(searchValue)
-        );
-      }
+      const { data } = searchData(
+        allCourses,
+        searchInput,
+        "courseName",
+        "courseDetails",
+        "authorName"
+      );
+      courses.value = data;
     });
+
+    // watch(searchInput, () => {
+    //   //for search
+    //   if (!searchInput.value) {
+    //     courses.value = allCourses.value;
+    //   } else {
+    //     const searchValue = searchInput.value.toLowerCase();
+    //     courses.value = allCourses.value.filter(
+    //       (res: any) =>
+    //         res.courseName.toLowerCase().includes(searchValue) ||
+    //         res.courseDetails.toLowerCase().includes(searchValue) ||
+    //         res.authorName.toLowerCase().includes(searchValue)
+    //     );
+    //   }
+    // });
 
     provide("allCourses", allCourses.value);
 

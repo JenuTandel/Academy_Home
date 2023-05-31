@@ -192,6 +192,8 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import { ref, computed } from "vue";
 import locationService from "@/services/location.services";
 import authService from "./services/auth.services";
+import { RegistrationData } from "./model/registration.model";
+import { AxiosResponse } from "axios";
 
 export default {
   components: {
@@ -237,7 +239,7 @@ export default {
     });
 
     //submit button functionality
-    async function onRegistration(data: any, { resetForm }: any) {
+    async function onRegistration(data: RegistrationData, { resetForm }: any) {
       // const a = countryData.value.find((res: any) => (res.id = data.country));
       // console.log(a.name);
       const userData = {
@@ -253,37 +255,38 @@ export default {
         joiningDate: `${new Date().getDate()}/ ${new Date().getMonth()}/ ${new Date().getFullYear()}`,
       };
 
-      try {
-        // await $store.dispatch("signup", {
-        //   email: data.email,
-        //   password: data.password,
-        // }),
-        // await $store.dispatch("registration", userData);
-        await authService
-          .signup({
-            email: data.email,
-            password: data.password,
-          })
-          .then((res) => {
-            if (res.data.error) {
-              error.value = res.data.error.message;
-            } else {
-              $store.commit("userId", res.data.localId);
-              $store.commit("getToasterData", {
-                message: "Registered Successfully",
-                type: "success",
-              });
-            }
-          });
-        // .then((res) => {
-        //   $store.dispatch("signup", res);
-        // });
-        // const userId = await $store.getters["userId"];
-        await authService.registration(userData);
-      } catch (err: any) {
-        // error.value = err.response.data.error.message;
-        $store.commit("isLoading", false);
-      }
+      // try {
+      // await $store.dispatch("signup", {
+      //   email: data.email,
+      //   password: data.password,
+      // }),
+      // await $store.dispatch("registration", userData);
+      await authService
+        .signup({
+          email: data.email,
+          password: data.password,
+        })
+        .then((res) => {
+          if (res.data.error) {
+            error.value = res.data.error.message;
+          } else {
+            $store.commit("userId", res.data.localId);
+            $store.commit("getToasterData", {
+              message: "Registered Successfully",
+              type: "success",
+            });
+          }
+        });
+      // .then((res) => {
+      //   $store.dispatch("signup", res);
+      // });
+      // const userId = await $store.getters["userId"];
+      await authService.registration(userData);
+      // }
+      // catch (err) {
+      //   // error.value = err.response.data.error.message;
+      //   $store.commit("isLoading", false);
+      // }
       if (!error.value) {
         resetForm();
         $router.push("/login");

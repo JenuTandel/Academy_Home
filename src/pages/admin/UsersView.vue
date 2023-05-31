@@ -64,6 +64,7 @@
 import { useStore } from "vuex";
 import { computed, ref, watch } from "vue";
 import authService from "../auth/services/auth.services";
+import searchData from "@/hooks/search";
 export default {
   setup() {
     const $store = useStore();
@@ -83,19 +84,31 @@ export default {
       users.value = usersData.value;
     });
 
+    //search hook
     watch(searchInput, () => {
-      const searchValue = searchInput.value.toLowerCase();
-      if (!searchInput.value) {
-        users.value = usersData.value;
-      } else {
-        users.value = usersData.value.filter(
-          (res: any) =>
-            res.firstname.toLowerCase().includes(searchValue) ||
-            res.lastname.toLowerCase().includes(searchValue) ||
-            res.email.toLowerCase().includes(searchValue)
-        );
-      }
+      //for search
+      const { data } = searchData(
+        usersData,
+        searchInput,
+        "firstname",
+        "lastname",
+        "email"
+      );
+      users.value = data;
     });
+    // watch(searchInput, () => {
+    //   const searchValue = searchInput.value.toLowerCase();
+    //   if (!searchInput.value) {
+    //     users.value = usersData.value;
+    //   } else {
+    //     users.value = usersData.value.filter(
+    //       (res: any) =>
+    //         res.firstname.toLowerCase().includes(searchValue) ||
+    //         res.lastname.toLowerCase().includes(searchValue) ||
+    //         res.email.toLowerCase().includes(searchValue)
+    //     );
+    //   }
+    // });
 
     function onRemove(id: any) {
       deletedId.value = id;
