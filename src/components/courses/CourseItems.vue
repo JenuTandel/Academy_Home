@@ -10,6 +10,7 @@
           class="card h-100"
           @click="onCard(course.id, course.courseName)"
           @mouseenter="startMonitoring(course.id)"
+          @mouseleave="stopMonitoring"
           :id="course.id"
         >
           <!-- @mouseleave="stopMonitoring" -->
@@ -17,6 +18,8 @@
             <dialog
               open
               class="border translate-middle-y"
+              @mouseenter="activeId = ''"
+              @mouseleave="activeId = course.id"
               :class="[
                 setTooltipXPosition
                   ? 'tooltip-position-right'
@@ -115,15 +118,13 @@ export default {
         }
       }
     }
-    // function stopMonitoring() {
-    //   console.log("leave");
-
-    //   activeId.value = "";
-    // }
+    function stopMonitoring() {
+      activeId.value = "";
+    }
     return {
       onCard,
       startMonitoring,
-      // stopMonitoring,
+      stopMonitoring,
       setTooltipXPosition,
       setTooltipYPosition,
       activeId,
@@ -138,9 +139,6 @@ dialog {
   width: 250px;
   padding: 20px;
   background-color: white;
-  // &:hover {
-  //   display: none;
-  // }
 }
 .tooltip-position-left {
   position: absolute;
@@ -166,13 +164,7 @@ dialog {
 .card {
   cursor: pointer;
   position: relative;
-  // dialog {
-  //   display: block;
 
-  //   &:hover {
-  //     display: none;
-  //   }
-  // }
   @include media-breakpoint-down(md) {
     dialog {
       display: none;
