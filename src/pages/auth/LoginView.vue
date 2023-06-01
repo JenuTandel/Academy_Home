@@ -64,6 +64,12 @@
           >
             LOGIN
           </button>
+          <!-- <button
+            class="form-control bg-secondary text-white mb-3 border-0"
+            @click="loginWithGoogle"
+          >
+            Login with Google
+          </button> -->
           <div class="text-center text-white">
             Not Regitered???
             <router-link to="/registration" class="text-danger"
@@ -92,6 +98,8 @@ import { ErrorMessage, Field, Form } from "vee-validate";
 import { ref } from "vue";
 import authService from "./services/auth.services";
 import { RegistrationData } from "./model/registration.model";
+// import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+// import { auth } from "@/firebase";
 
 export default {
   components: { ErrorMessage, Field, Form },
@@ -147,6 +155,17 @@ export default {
     function handleError() {
       error.value = null;
     }
+    // function loginWithGoogle() {
+    //   const provider = new GoogleAuthProvider();
+    //   signInWithPopup(auth, provider)
+    //     .then((res) => {
+    //       // console.log(res);
+    //       $router.push("/home");
+    //     })
+    //     .catch((err: Error) => {
+    //       console.log(err);
+    //     });
+    // }
     return { onLogin, schema, error, handleError };
   },
 };
