@@ -39,7 +39,7 @@
       </div>
       <div class="mb-3">
         <Field
-          type="text"
+          type="number"
           id="timeDuration"
           name="timeDuration"
           class="form-control"
@@ -129,50 +129,61 @@ export default {
     const $store = useStore();
     const imageUrl = refrence("");
     const schema = yup.object({
-      courseName: yup.string().required(),
-      courseDetails: yup.string().required(),
+      courseName: yup.string().required().trim(),
+      courseDetails: yup.string().required().trim(),
       timeDuration: yup.string().required(),
-      authorName: yup.string().required(),
-      courseImage: yup.string(),
+      authorName: yup.string().required().trim(),
+      courseImage: yup.string().required(),
     });
 
     //add course data
     async function onSubmit(data: any) {
       if (updateId.value) {
-        const course = {
-          id: props.updateId,
-          courseName: data.courseName,
-          courseDetails: data.courseDetails,
-          timeDuration: data.timeDuration,
-          authorName: data.authorName,
-          courseImage: { _value: imageUrl.value },
-          courseDate: `${
-            months[new Date().getMonth()]
-          } ${new Date().getFullYear()}`,
-        };
-        await courseService.updateCourse(course).then((res) => {
-          console.log(res.data);
-        });
-        // await $store.dispatch("courses/updateCourse", {
-        //   id: props.updateId,
-        //   courseName: data.courseName,
-        //   courseDetails: data.courseDetails,
-        //   timeDuration: data.timeDuration,
-        //   authorName: data.authorName,
-        //   courseImage: { _value: imageUrl.value },
-        //   courseDate: `${
-        //     months[new Date().getMonth()]
-        //   } ${new Date().getFullYear()}`,
-        // });
+        if (imageUrl.value == "") {
+          context.emit("closeDialog", false);
+        } else {
+          const course = {
+            id: props.updateId,
+            courseName: data.courseName,
+            courseDetails: data.courseDetails,
+            timeDuration: data.timeDuration,
+            authorName: data.authorName,
+            courseImage: { _value: imageUrl.value },
+            courseDate: `${
+              months[new Date().getMonth()]
+            } ${new Date().getFullYear()}`,
+          };
+
+          await courseService.updateCourse(course).then((res) => {
+            console.log(res.data);
+          });
+          context.emit("closeDialog", true);
+          // await $store.dispatch("courses/updateCourse", {
+          //   id: props.updateId,
+          //   courseName: data.courseName,
+          //   courseDetails: data.courseDetails,
+          //   timeDuration: data.timeDuration,
+          //   authorName: data.authorName,
+          //   courseImage: { _value: imageUrl.value },
+          //   courseDate: `${
+          //     months[new Date().getMonth()]
+          //   } ${new Date().getFullYear()}`,
+          // });
+        }
       } else {
-        const course = {
-          ...data,
-          courseDate: `${
-            months[new Date().getMonth()]
-          } ${new Date().getFullYear()}`,
-          courseImage: imageUrl,
-        };
-        await courseService.addCourse(course);
+        if (uploadingImage.value) {
+          context.emit("closeDialog", false);
+        } else {
+          const course = {
+            ...data,
+            courseDate: `${
+              months[new Date().getMonth()]
+            } ${new Date().getFullYear()}`,
+            courseImage: imageUrl,
+          };
+          await courseService.addCourse(course);
+          context.emit("closeDialog", true);
+        }
         // await $store.dispatch("courses/addCourse", {
         //   ...data,
         //   courseDate: `${
@@ -181,7 +192,6 @@ export default {
         //   courseImage: imageUrl,
         // });
       }
-      context.emit("closeDialog", true);
       // $store.dispatch("courses/getCourses");
       courseService.getCourses().then((res) => {
         $store.dispatch("courses/getCourses", res.data);
@@ -195,17 +205,27 @@ export default {
 
     //image upload and get url
     function handleFileUpload(event: any) {
-      if (event) {
-        uploadingImage.value = "uploading....";
-      }
+      console.log(event);
+
       const file = event.target.files[0];
-      const storageRef = ref(storage, file.name);
-      uploadBytes(storageRef, file).then(() => {
-        getDownloadURL(ref(storage, file.name)).then((url) => {
-          imageUrl.value = url;
-          uploadingImage.value = "";
-        });
-      });
+      if (event) {
+        if (!/\.(jpg|svg|jpeg|png|JPG|SVG|JPEG|PNG)$/.test(file.name)) {
+          uploadingImage.value = "format wrong";
+          imageUrl.value = "";
+        } else if (file.size > 102400) {
+          uploadingImage.value = "file size should be less than 100 KB";
+          imageUrl.value = "";
+        } else {
+          uploadingImage.value = "uploading....";
+          const storageRef = ref(storage, file.name);
+          uploadBytes(storageRef, file).then(() => {
+            getDownloadURL(ref(storage, file.name)).then((url) => {
+              imageUrl.value = url;
+              uploadingImage.value = "";
+            });
+          });
+        }
+      }
     }
     return {
       schema,
